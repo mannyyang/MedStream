@@ -3,14 +3,13 @@ var SERVER_PORT = 8080;
 var DATABASE_NAME = 'meddb';
 var COLLECTION_NAME = 'tweets';
 var collectionExists = false;
-
 /*** Module dependencies. ***/
 var express = require('express');
 var app = express();
 var http = require('http');
 var server = http.createServer(app);
 var routes = require('./routes');
-var user = require('./routes/user');
+//var api = require('./routes/api');
 var path = require('path');
 var mongoose = require('mongoose');
 var db = mongoose.connect('mongodb://localhost/' + DATABASE_NAME);
@@ -34,12 +33,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
+// production only
+if (app.get('env') === 'production') {
+  // TODO
+};
 
 //routing
-app.get('/', function (req, res) {
-	res.sendfile(__dirname + '/views/index.html');
-});
-app.get('/users', user.list);
+app.get('/', routes.index);
 
 //MongoDB verification
 mongoose.connection.on('open', function (ref) {
@@ -58,10 +58,8 @@ mongoose.connection.on('error', function (err){
   , access_token_secret:  '9M7yweRLlDGeMcBPHNZTUQssBnlFapmtYzWV4jf2M'
 })
 
-//sockets
-io.sockets.on('connection', function (socket) {
-  console.log('Socket started on connection');
-  mongoose.connection.db.collectionNames(function (err, names){
+// Inserting past tweets into database (When app first starts up)
+mongoose.connection.db.collectionNames(function (err, names){
     // for (var i = 0; i < names.length; i++){
     //   if (names[i].name === DATABASE_NAME + '.' + COLLECTION_NAME){
     //     collectionExists = true;
@@ -71,8 +69,9 @@ io.sockets.on('connection', function (socket) {
     // }
     if (!collectionExists){
       console.log('crawling/parsing');
-        T.search('uci AND health', function(data) {
-          for (var i = 0; i < data.statuses.length; i++){
+      T.search('uci AND health', function(data) {
+
+      for (var i = 0; i < data.statuses.length; i++){
             var tweets = data.statuses[i];
             var tweet = new Document({
                 id: tweets.id,
@@ -83,14 +82,18 @@ io.sockets.on('connection', function (socket) {
                   screen_name: tweets.user.screen_name,
                   location: tweets.user.location
                 }],
-                text: tweets.text
-            });
-            tweet.save(function(err){ if (err) return err; });
+                text: tweets.text});
           }
-          //io.sockets.emit('tweets', data.statuses);
-        });
+          tweet.save(function(err){ if (err) return err; });
+      });
+      
     }
-  });
+});
+
+//sockets
+io.sockets.on('connection', function (socket) {
+  console.log('Socket started on connection');
+  //io.sockets.emit('tweets', data.statuses);
     
 });
 
