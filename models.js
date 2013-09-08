@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var twitterSchema = new Schema ({
-	id: {type: Number, index: true},
+	id: {type: Number, index: {unique: true, dropDups: true}},
 	created_at: Date,
 	user: [{
 		id: Number,
@@ -10,12 +10,11 @@ var twitterSchema = new Schema ({
 		screen_name: String,
 		location: String
 	}],
-	text: String,
-	hashtags: [String]
+	text: String
 });
 
-mongoose.model('Document', twitterSchema);
+mongoose.model('Tweets', twitterSchema);
 
 exports.Document = function(db) {
-  return db.model('Document');
+  return db.model('Tweets');
 };
