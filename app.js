@@ -10,7 +10,9 @@ var server = http.createServer(app);
 var routes = require('./routes');
 var user = require('./routes/user');
 var path = require('path');
-var util = require('util');
+var mongoose = require('mongoose');
+var db = mongoose.connect('mongodb://localhost/meddb');
+var Document = require('./models.js').Document(db);
 var Twitter = require('twitter');
 var io = require('socket.io').listen(server);
 
@@ -36,6 +38,24 @@ app.get('/', function (req, res) {
 	res.sendfile(__dirname + '/views/index.html');
 });
 app.get('/users', user.list);
+app.get('/documents', function(req, res) {
+  Document.find().all(function(documents) {
+    // 'documents' will contain all of the documents returned by the query
+    res.send(documents.map(function(d) {
+      // Return a useful representation of the object that res.send() can send as JSON
+      return d.__doc;
+    }));
+  });
+});
+
+//MongoDB verification
+mongoose.connection.on('open', function (ref) {
+  console.log('Connected to mongo server.');
+});
+mongoose.connection.on('error', function (err){
+  console.log('Could not connect to mongo server!');
+  console.log(err);
+});
 
 //Twitter Credentials
  var T = new Twitter({
@@ -50,7 +70,7 @@ app.get('/users', user.list);
 io.sockets.on('connection', function (socket) {
   	console.log('Connected');
 	T.search('uci AND health', function(data) {
-	    io.sockets.emit('tweets', util.inspect(data));
+	    io.sockets.emit('tweets', data);
 	});
   	
 });
