@@ -67,6 +67,7 @@ mongoose.connection.db.collectionNames(function (err, names){
     //     return;
     //   }
     // }
+    console.log('CRAWLING');
     if (!collectionExists){
       console.log('crawling/parsing');
       T.search('uci AND health', function(data) {
@@ -85,16 +86,18 @@ mongoose.connection.db.collectionNames(function (err, names){
                 text: tweets.text});
           }
           tweet.save(function(err){ if (err) return err; });
-      });
-      
+      });   
     }
 });
 
 //sockets
 io.sockets.on('connection', function (socket) {
   console.log('Socket started on connection');
-  //io.sockets.emit('tweets', data.statuses);
-    
+  // Find all tweets.
+  // Document.find(function(err, tweets) {
+  //   if (err) return console.error(err);
+  //   io.sockets.emit('tweets', tweets);
+  // });    
 });
 
 
