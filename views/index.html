@@ -23,13 +23,12 @@
   <!-- Main Feed -->
   <div class="row">
     <div id="tweets" class="large-12 columns" ng-controller="FeedController">
-      {{inputfeeds()}}
       <!-- Feed Entry -->
       <div ng-repeat="feed in twitterfeed" class="row">
         <div class="large-2 columns small-3"><img src="http://placehold.it/80x80&text=[img]" /></div>
         <div class="large-10 columns">
           <p>
-            <strong>{{feed.user.name}}</strong>{{feed.text}}
+            <strong>{{feed.user[0].name}}</strong>: {{feed.text}}
           </p>
         </div>
       </div>

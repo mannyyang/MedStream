@@ -9,7 +9,6 @@ function FeedController($scope) {
 
   // $scope.inputfeeds = function(){
   //   angular.forEach(tweets, function(tweet){
-  //     alert(JSON.stringify(tweet));
   //     $scope.twitterfeed.push(tweet);
   //   });
   // };

@@ -59,45 +59,36 @@ mongoose.connection.on('error', function (err){
 })
 
 // Inserting past tweets into database (When app first starts up)
-mongoose.connection.db.collectionNames(function (err, names){
-    // for (var i = 0; i < names.length; i++){
-    //   if (names[i].name === DATABASE_NAME + '.' + COLLECTION_NAME){
-    //     collectionExists = true;
-    //     console.log('db exists.');
-    //     return;
-    //   }
-    // }
-    console.log('CRAWLING');
-    if (!collectionExists){
-      console.log('crawling/parsing');
-      T.search('uci AND health', function(data) {
+console.log('CRAWLING');
+if (!collectionExists){
+  console.log('crawling/parsing');
+  T.search('uci AND health', function(data) {
 
-      for (var i = 0; i < data.statuses.length; i++){
-            var tweets = data.statuses[i];
-            var tweet = new Document({
-                id: tweets.id,
-                created_at: tweets.created_at,
-                user: [{
-                  id: tweets.user.id,
-                  name: tweets.user.name,
-                  screen_name: tweets.user.screen_name,
-                  location: tweets.user.location
-                }],
-                text: tweets.text});
-          }
-          tweet.save(function(err){ if (err) return err; });
-      });   
-    }
-});
+  for (var i = 0; i < data.statuses.length; i++){
+        var tweets = data.statuses[i];
+        var tweet = new Document({
+            id: tweets.id,
+            created_at: tweets.created_at,
+            user: [{
+              id: tweets.user.id,
+              name: tweets.user.name,
+              screen_name: tweets.user.screen_name,
+              location: tweets.user.location
+            }],
+            text: tweets.text});
+      }
+      tweet.save(function(err){ if (err) return err; });
+  });   
+}
 
 //sockets
 io.sockets.on('connection', function (socket) {
   console.log('Socket started on connection');
-  // Find all tweets.
-  // Document.find(function(err, tweets) {
-  //   if (err) return console.error(err);
-  //   io.sockets.emit('tweets', tweets);
-  // });    
+  //Find all tweets.
+  Document.find(function(err, tweets) {
+    if (err) return console.error(err);
+    io.sockets.emit('tweets', tweets);
+  });    
 });
 
 
