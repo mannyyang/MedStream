@@ -14,7 +14,7 @@ var path = require('path');
 var mongoose = require('mongoose');
 var db = mongoose.connect('mongodb://localhost/' + DATABASE_NAME);
 var Document = require('./models.js').Document(db);
-var Twitter = require('twitter');
+var Twitter = require('twit');
 var io = require('socket.io').listen(server);
 
 server.listen(SERVER_PORT);
@@ -54,7 +54,7 @@ mongoose.connection.on('error', function (err){
  var T = new Twitter({
     consumer_key:         'Vx1Pgf8UlLKKQtzUdZz95g'
   , consumer_secret:      'hMgEz35wGedZOTTQINcijTF6pknyxypNsjHOlk5uAw'
-  , access_token_key:     '1551825924-l9sX9eNlTdRnL7UcQHmjAm1oC5gB8TYmynBC2gh'
+  , access_token:     '1551825924-l9sX9eNlTdRnL7UcQHmjAm1oC5gB8TYmynBC2gh'
   , access_token_secret:  '9M7yweRLlDGeMcBPHNZTUQssBnlFapmtYzWV4jf2M'
 })
 
@@ -62,9 +62,9 @@ mongoose.connection.on('error', function (err){
 console.log('CRAWLING');
 if (!collectionExists){
   console.log('crawling/parsing');
-  T.search('uci AND health', function(data) {
-
-  for (var i = 0; i < data.statuses.length; i++){
+  var searchTerms = ['uci', 'health', 'since:2011-11-11'];
+  T.get('search/tweets', { q: searchTerms, count: 20 }, function(err, data) {
+      for (var i = 0; i < data.statuses.length; i++){
         var tweets = data.statuses[i];
         var tweet = new Document({
             id: tweets.id,
@@ -76,8 +76,8 @@ if (!collectionExists){
               location: tweets.user.location
             }],
             text: tweets.text});
+        tweet.save(function(err){ if (err) return err; });
       }
-      tweet.save(function(err){ if (err) return err; });
   });   
 }
 
