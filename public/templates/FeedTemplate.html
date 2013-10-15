@@ -1,0 +1,6 @@
+<div class="tweet" ng-repeat="tweet in twitterfeed | reverse">
+	<h6 class="left">{{tweet.user[0].name}}</h6>
+	<h6 class="subheader">@{{tweet.user[0].screen_name}}</h6>
+	<p>"{{tweet.text}}"</p>
+	<span>location: {{tweet.user[0].location}} | <i>{{tweet.created_at}}</i></span>
+</div>

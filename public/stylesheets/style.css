@@ -1,8 +1,29 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.container h2 {
+	padding: 10px 20px;
+	margin: 0;
+	border: 1px solid #d9d9d9;
+	border-bottom: none;	
 }
 
-a {
-  color: #00B7FF;
+/*------  Feed Styles  -------*/
+/*** Feed Panel ***/
+#FeedContainer .panel{
+	max-height: 750px;
+	overflow: auto;
+}
+
+/*** Tweets ***/
+#FeedContainer .tweet{
+	padding: 10px 0;
+	margin: 5px 0;
+
+	border-bottom: 1px solid #d9d9d9;
+}
+#FeedContainer .tweet h6{
+	margin-right: 10px;
+	line-height: 0;
+}
+#FeedContainer p {
+	padding: 5px 0;
+	margin-bottom: 10px;
 }

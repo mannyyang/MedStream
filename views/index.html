@@ -8,76 +8,191 @@
 
   <link rel="stylesheet" href="/stylesheets/foundation/normalize.css" />
   <link rel="stylesheet" href="/stylesheets/foundation/foundation.css" />
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+
 </head>
-<body ng-app>
+<body ng-app="MedStream">
 <!-- START BODY -->
-  <!-- START Header and Nav -->
-  <div class="row">
-    <div class="large-12 columns">
-      <div class="panel">
-        <h1>Feed Template</h1>
-      </div>
-    </div>
-  </div>
+
+  <!-- Header and Nav -->
+  <nav class="top-bar">
+    <ul class="title-area">
+      <!-- Title Area -->
+      <li class="name">
+        <h1>
+          <a href="#">
+            CASH
+          </a>
+        </h1>
+      </li>
+      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+ 
+    <section class="top-bar-section">
+      <!-- Left Nav Section -->
+      <ul class="left">
+        <li class="divider"></li>
+        <li class="has-dropdown">
+          <a class="active" href="#">RULES</a>
+          <ul class="dropdown">
+            <li><label>Section Name</label></li>
+            <li><a href="#" class="">Dropdown Level 1</a></li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li class="divider"></li>
+            <li><label>Section Name</label></li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li class="divider"></li>
+            <li><a href="#">See all &rarr;</a></li>
+          </ul>
+        </li>
+        <li class="divider"></li>
+        <li><a href="#">EVERYTHING</a></li>
+        <li class="divider"></li>
+        <li class="has-dropdown">
+          <a href="#">AROUND</a>
+          <ul class="dropdown">
+            <li><a href="#">Dropdown Option</a></li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li class="divider"></li>
+            <li><a href="#">See all &rarr;</a></li>
+          </ul>
+        </li>
+       
+      </ul>
+ 
+      <!-- Right Nav Section -->
+      <ul class="right">
+        <li class="divider"></li>
+        <li class="has-dropdown">
+          <a href="#">ME</a>
+          <ul class="dropdown">
+            <li><label>Section Name</label></li>
+            <li class="has-dropdown">
+              <a href="#" class="">Has Dropdown, Level 1</a>
+              <ul class="dropdown">
+                <li><a href="#">Dropdown Options</a></li>
+                <li><a href="#">Dropdown Options</a></li>
+                <li class="has-dropdown">
+                  <a href="#">Has Dropdown, Level 2</a>
+                  <ul class="dropdown test">
+                    <li><a href="#">Subdropdown Option</a></li>
+                    <li><a href="#">Subdropdown Option</a></li>
+                    <li><a href="#">Subdropdown Option</a></li>
+                  </ul>
+                </li>
+                <li><a href="#">Subdropdown Option</a></li>
+                <li><a href="#">Subdropdown Option</a></li>
+                <li><a href="#">Subdropdown Option</a></li>
+              </ul>
+            </li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li class="divider"></li>
+            <li><label>Section Name</label></li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li class="divider"></li>
+            <li><a href="#">See all &rarr;</a></li>
+          </ul>
+        </li>
+        <li class="divider"></li>
+        <li><a href="#">CREAM</a></li>
+        <li class="divider"></li>
+        <li class="has-dropdown">
+          <a href="#">!</a>
+          <ul class="dropdown">
+            <li><a href="#">Dropdown Option</a></li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li><a href="#">Dropdown Option</a></li>
+            <li class="divider"></li>
+            <li><a href="#">See all &rarr;</a></li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+  </nav>
+ 
   <!-- End Header and Nav -->
-  <!-- Main Feed -->
+ 
+  <!-- Main Grid Section -->
+
   <div class="row">
-    <div id="tweets" class="large-12 columns" ng-controller="FeedController">
-      <!-- Feed Entry -->
-      <div ng-repeat="feed in twitterfeed" class="row">
-        <div class="large-2 columns small-3"><img src="http://placehold.it/80x80&text=[img]" /></div>
-        <div class="large-10 columns">
-          <p>
-            <strong>{{feed.user[0].name}}</strong>: {{feed.text}}
-          </p>
-        </div>
-      </div>
-      <!-- End Feed Entry -->
+ 
+    <div id="FeedContainer" class="large-7 columns container" ng-controller="FeedController">
+      <h2>Real Time Feed</h2>
+      <div class="panel" ng-include="'/templates/FeedTemplate.html'"></div>
     </div>
+
+    <div id="TotalTweetsContainer" class="large-5 columns container" ng-controller="TotalTweetsController">
+      <h2>Total Tweets</h2>
+      <div class="panel" ng-include="'/templates/TotalTweetsTemplate.html'">
+
+      </div>
+    </div>
+ 
   </div>
-  <!-- End Main Feed -->
-  <!-- START FOOTER -->
+ 
+  <!-- End Grid Section -->
+ 
+  <!-- Footer -->
+ 
   <footer class="row">
     <div class="large-12 columns">
+      <hr />
       <div class="row">
-        <div class="large-5 columns">
-          <p>&copy; Copyright no one.</p>
+        <div class="large-6 columns">
+          <p>&copy; Copyright no one at all. Go to town.</p>
         </div>
-        <div class="large-7 columns">
+        <div class="large-6 columns">
+          <ul class="inline-list right">
+            <li><a href="#">Section 1</a></li>
+            <li><a href="#">Section 2</a></li>
+            <li><a href="#">Section 3</a></li>
+            <li><a href="#">Section 4</a></li>
+          </ul>
         </div>
       </div>
     </div>
   </footer>
-  <!-- END FOOTER -->
-  <!-- SCRIPTS -->
+
+<!-- SCRIPTS -->
   <script src="/javascripts/foundation/vendor/custom.modernizr.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/javascripts/angular/angular.js"></script>
-  <script src="/javascripts/FeedController.js"></script>
+  <script src="/javascripts/MedStreamApp.js"></script>
   <script>
   document.write('<script src=' +
   ('__proto__' in {} ? '/javascripts/foundation/vendor/zepto' : '/javascripts/foundation/vendor/jquery') +
   '.js><\/script>');
   </script>
   <script src="/javascripts/foundation/foundation.js"></script>
-  <script src="js/foundation/foundation.alerts.js"></script>
-  <script src="js/foundation/foundation.clearing.js"></script>
-  <script src="js/foundation/foundation.cookie.js"></script>
-  <script src="js/foundation/foundation.dropdown.js"></script>
-  <script src="js/foundation/foundation.forms.js"></script>
-  <script src="js/foundation/foundation.joyride.js"></script>
-  <script src="js/foundation/foundation.magellan.js"></script>
-  <script src="js/foundation/foundation.orbit.js"></script>
-  <script src="js/foundation/foundation.placeholder.js"></script>
-  <script src="js/foundation/foundation.reveal.js"></script>
-  <script src="js/foundation/foundation.section.js"></script>
-  <script src="js/foundation/foundation.tooltips.js"></script>
-  <script src="js/foundation/foundation.topbar.js"></script>
-  <script src="js/foundation/foundation.interchange.js"></script>
+
+<!-- SCRIPTS TO USE IF NEEDED -->
+  <script src="javascripts/foundation/foundation.alerts.js"></script>
+  <script src="javascripts/foundation/foundation.clearing.js"></script>
+  <script src="javascripts/foundation/foundation.cookie.js"></script>
+  <script src="javascripts/foundation/foundation.dropdown.js"></script>
+  <script src="javascripts/foundation/foundation.forms.js"></script>
+  <script src="javascripts/foundation/foundation.joyride.js"></script>
+  <script src="javascripts/foundation/foundation.magellan.js"></script>
+  <script src="javascripts/foundation/foundation.orbit.js"></script>
+  <script src="javascripts/foundation/foundation.placeholder.js"></script>
+  <script src="javascripts/foundation/foundation.reveal.js"></script>
+  <script src="javascripts/foundation/foundation.section.js"></script>
+  <script src="javascripts/foundation/foundation.tooltips.js"></script>
+  <script src="javascripts/foundation/foundation.topbar.js"></script>
+  <script src="javascripts/foundation/foundation.interchange.js"></script>
   <script>
     $(document).foundation();
   </script>
+<!-- END SCRIPTS -->
+
 <!-- END BODY -->  
 </body>
 </html>

@@ -9,7 +9,8 @@
     "express": "3.3.8",
     "jade": "*",
     "mongodb": "*",
-    "twitter": "*",
+    "mongoose": "*",
+    "twit": "*",
     "socket.io": "*"
   }
 }
