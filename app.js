@@ -63,7 +63,6 @@ app.io.route('ready', function(req) {
 
       // After tweet is saved, send to the client feed
       tweetDoc.save(function (err, tweet) {
-      console.log(tweet);
         if (err) {
           return console.log(err);
         }
@@ -87,6 +86,41 @@ app.io.route('ready', function(req) {
       });
 
   }, 500);
+
+  setInterval(function(){
+  // Getting data for keywords chart
+    var total = 0;
+    var moneyCount = 0;
+    var cashCount = 0;
+    var dollarsCount = 0;
+
+    Document.count(function(err, count) {
+      if (err) return console.error(err);
+      total = count;
+    });
+
+    Document.count({ words: { $in: [ "text", "money" ] } } , function(err, count) {
+      if (err) return console.error(err);
+      moneyCount = count/total;
+      console.log(count);
+    });
+
+    Document.count({ words: { $in: [ "text", "cash" ] } } , function(err, count) {
+      if (err) return console.error(err);
+      cashCount = count/total;
+    });
+
+    Document.count({ words: { $in: [ "text", "dollars" ] } } , function(err, count) {
+      if (err) return console.error(err);
+      dollarsCount = count/total;
+    });
+
+    req.io.emit('keywords-route', {
+          moneyPer: moneyCount,
+          cashPer: cashCount,
+          dollarsPer: dollarsCount
+    });
+  }, 1000);
 
 });
 

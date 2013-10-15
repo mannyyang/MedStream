@@ -8,7 +8,7 @@
 /*------  Feed Styles  -------*/
 /*** Feed Panel ***/
 #FeedContainer .panel{
-	max-height: 750px;
+	max-height: 675px;
 	overflow: auto;
 }
 
@@ -26,4 +26,10 @@
 #FeedContainer p {
 	padding: 5px 0;
 	margin-bottom: 10px;
+}
+
+/*------  Total Tweets Styles  -------*/
+/*** Total Tweet Panel ***/
+#TotalTweetsContainer .panel{
+
 }

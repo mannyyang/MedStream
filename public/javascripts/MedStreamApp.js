@@ -6,6 +6,13 @@ var MedStreamApp = angular.module('MedStream', [])
     return io.connect();
 
   })
+  .factory('KeywordChartFactory', function(){
+
+    //instantiate chart.js
+    //Get context with jQuery - using jQuery's .get() method.
+    return $("#KeywordChart").get(0).getContext("2d");
+
+  })
   .filter('reverse', function() {
     return function(items) {
       return items.slice().reverse();
@@ -32,7 +39,7 @@ MedStreamApp.controller('FeedController', function FeedController($scope, Socket
 });
 
 //---- TOTAL TWEETS CONTROLLER -----//
-MedStreamApp.controller('TotalTweetsController', function FeedController($scope, SocketFactory) {
+MedStreamApp.controller('TotalTweetsController', function TotalTweetsController($scope, SocketFactory) {
   // send ready signal to server.
   SocketFactory.emit('ready');
 
@@ -44,4 +51,29 @@ MedStreamApp.controller('TotalTweetsController', function FeedController($scope,
     $scope.totalTweets = data.message;
     $scope.$apply();
   });
+});
+
+//---- KEYWORD CHART CONTROLLER -----//
+MedStreamApp.controller('KeywordChartController', function KeywordChartController($scope, SocketFactory, KeywordChartFactory) {
+  // send ready signal to server.
+  SocketFactory.emit('ready');
+
+  // When socket receives tweet, add to the recent tweet array
+  SocketFactory.on('keywords-route', function(data){
+      // instantiate data
+      var chartData = {
+        labels : ["money", "cash", "dollars"],
+        datasets : [
+          {
+            fillColor : "rgba(220,220,220,0.5)",
+            strokeColor : "rgba(220,220,220,1)",
+            data : [0, 0, 2]
+          }
+        ]
+      };
+
+    chartData.datasets[0].data = [data.moneyPer, data.cashPer, data.dollarsPer];
+    new Chart(KeywordChartFactory).Bar(chartData);
+  });
+
 });

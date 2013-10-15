@@ -120,6 +120,16 @@
   <!-- End Header and Nav -->
  
   <!-- Main Grid Section -->
+  <div class="row">
+    <div class="large-12 columns">
+      <div class="panel">
+        Keywords: Any tweets from the public stream that have the words 
+        <span class="label">money</span>,
+        <span class="label">cash</span>, or
+        <span class="label">dollars</span>
+      </div>
+    </div>
+  </div>
 
   <div class="row">
  
@@ -132,6 +142,13 @@
       <h2>Total Tweets</h2>
       <div class="panel" ng-include="'/templates/TotalTweetsTemplate.html'">
 
+      </div>
+    </div>
+
+    <div id="KeywordChartContainer" class="large-5 columns container" ng-controller="KeywordChartController">
+      <h2>Keyword %s</h2>
+      <div class="panel">
+        <canvas id="KeywordChart" width="350" height="375"></canvas>
       </div>
     </div>
  
@@ -165,6 +182,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/javascripts/angular/angular.js"></script>
+  <script src="/javascripts/chartjs/chart.js"></script>
   <script src="/javascripts/MedStreamApp.js"></script>
   <script>
   document.write('<script src=' +
@@ -179,15 +197,10 @@
   <script src="javascripts/foundation/foundation.cookie.js"></script>
   <script src="javascripts/foundation/foundation.dropdown.js"></script>
   <script src="javascripts/foundation/foundation.forms.js"></script>
-  <script src="javascripts/foundation/foundation.joyride.js"></script>
-  <script src="javascripts/foundation/foundation.magellan.js"></script>
-  <script src="javascripts/foundation/foundation.orbit.js"></script>
-  <script src="javascripts/foundation/foundation.placeholder.js"></script>
   <script src="javascripts/foundation/foundation.reveal.js"></script>
   <script src="javascripts/foundation/foundation.section.js"></script>
   <script src="javascripts/foundation/foundation.tooltips.js"></script>
   <script src="javascripts/foundation/foundation.topbar.js"></script>
-  <script src="javascripts/foundation/foundation.interchange.js"></script>
   <script>
     $(document).foundation();
   </script>
