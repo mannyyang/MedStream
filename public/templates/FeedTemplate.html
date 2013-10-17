@@ -3,4 +3,5 @@
 	<h6 class="subheader">@{{tweet.user[0].screen_name}}</h6>
 	<p>"{{tweet.text}}"</p>
 	<span>location: {{tweet.user[0].location}} | <i>{{tweet.created_at}}</i></span>
+	<span ng-repeat="keyword in keywords" ng-class="keyword">{{keyword}}</span>
 </div>

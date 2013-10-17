@@ -10,7 +10,8 @@ var twitterSchema = new Schema ({
 		screen_name: String,
 		location: String
 	}],
-	text: String
+	text: String,
+	keywords: []
 });
 
 mongoose.model('Tweets', twitterSchema);

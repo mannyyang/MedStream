@@ -33,3 +33,14 @@
 #TotalTweetsContainer .panel{
 
 }
+
+/*------  MISC  -------*/
+.medical {
+	color: red;
+}
+.hospital{
+	color: green;
+}
+.keyword {
+	font-weight: bold;
+};

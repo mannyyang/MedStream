@@ -26,6 +26,7 @@ MedStreamApp.controller('FeedController', function FeedController($scope, Socket
 
   //instantiate variables
   $scope.twitterfeed = [];
+  $scope.keywords = [];
 
   // When socket receives tweet, add to the recent tweet array
   SocketFactory.on('tweet-route', function(data){
@@ -34,6 +35,7 @@ MedStreamApp.controller('FeedController', function FeedController($scope, Socket
       $scope.twitterfeed.shift();
     }
     $scope.twitterfeed.push(data.message);
+    $scope.keywords = data.message.keywords;
     $scope.$apply();
   });
 });

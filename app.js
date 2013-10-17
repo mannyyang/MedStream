@@ -47,8 +47,23 @@ var T = new Twitter({
 app.io.route('ready', function(req) {
   
   // Streaming tweets and placing them in the database, then sending them to the feed
-  var stream = T.stream('statuses/filter', { track: 'health center, medical, irvine center' });
+  var stream = T.stream('statuses/filter', { track: 'health center, medical, hospital' });
   stream.on('tweet', function (tweet) {
+      //console.log(tweet);
+
+      // search the twitter text to see if it matches any of the keywords
+      var keywords = [];
+      var text = tweet.text.toLowerCase();
+      if ( (text.search('health') != -1) && (text.search('center') != -1) ){
+        keywords.push("health center");
+      }
+      if ( text.search('hospital') != -1){
+        keywords.push("hospital");
+      }
+      if ( text.search('medical') != -1 ){
+        keywords.push("medical");
+      }
+
       var tweetDoc = new Document({
           id: tweet.id,
           created_at: tweet.created_at,
@@ -58,7 +73,8 @@ app.io.route('ready', function(req) {
             screen_name: tweet.user.screen_name,
             location: tweet.user.location
           }],
-          text: tweet.text
+          text: tweet.text,
+          keywords: keywords
       });
 
       // After tweet is saved, send to the client feed
