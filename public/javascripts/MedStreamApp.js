@@ -62,7 +62,7 @@ MedStreamApp.controller('KeywordChartController', function KeywordChartControlle
   SocketFactory.on('keywords-route', function(data){
       // instantiate data
       var chartData = {
-        labels : ["money", "cash", "dollars"],
+        labels : ["health center", "medical", "irvine center"],
         datasets : [
           {
             fillColor : "rgba(220,220,220,0.5)",

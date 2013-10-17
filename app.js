@@ -47,7 +47,7 @@ var T = new Twitter({
 app.io.route('ready', function(req) {
   
   // Streaming tweets and placing them in the database, then sending them to the feed
-  var stream = T.stream('statuses/filter', { track: 'money, cash, dollars' });
+  var stream = T.stream('statuses/filter', { track: 'health center, medical, irvine center' });
   stream.on('tweet', function (tweet) {
       var tweetDoc = new Document({
           id: tweet.id,
@@ -67,6 +67,7 @@ app.io.route('ready', function(req) {
           return console.log(err);
         }
         else {
+          console.log(tweet);
           req.io.emit('tweet-route', {
             message: tweet
           });
@@ -87,7 +88,7 @@ app.io.route('ready', function(req) {
 
   }, 500);
 
-  setInterval(function(){
+  // setInterval(function(){
   // Getting data for keywords chart
     var total = 0;
     var moneyCount = 0;
@@ -102,7 +103,6 @@ app.io.route('ready', function(req) {
     Document.count({ words: { $in: [ "text", "money" ] } } , function(err, count) {
       if (err) return console.error(err);
       moneyCount = count/total;
-      console.log(count);
     });
 
     Document.count({ words: { $in: [ "text", "cash" ] } } , function(err, count) {
@@ -116,11 +116,11 @@ app.io.route('ready', function(req) {
     });
 
     req.io.emit('keywords-route', {
-          moneyPer: moneyCount,
-          cashPer: cashCount,
-          dollarsPer: dollarsCount
+          moneyPer: 35,
+          cashPer: 59,
+          dollarsPer: 40
     });
-  }, 1000);
+  // }, 1000);
 
 });
 
@@ -130,17 +130,6 @@ app.get('/', routes.index);
 
 //*** Start up the server ***//
 app.listen(SERVER_PORT);
-
-// //sockets
-// io.sockets.on('connection', function (socket) {
-//   console.log('Socket started on connection');
-
-//   //Find all tweets.
-//   Document.find(function(err, tweets) {
-//     if (err) return console.error(err);
-//     io.sockets.emit('tweets', tweets);
-//   });
-// });
 
 
 
