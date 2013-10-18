@@ -1,5 +1,5 @@
 /*** Global Variables ***/
-var SERVER_PORT = 8080;
+var SERVER_PORT = 8081;
 var DATABASE_NAME = 'meddb';
 var COLLECTION_NAME = 'Tweets';
 
@@ -47,21 +47,24 @@ var T = new Twitter({
 app.io.route('ready', function(req) {
   
   // Streaming tweets and placing them in the database, then sending them to the feed
-  var stream = T.stream('statuses/filter', { track: 'health center, medical, hospital' });
+  var stream = T.stream('statuses/filter', { track: 'doctor, hospital, patients' });
   stream.on('tweet', function (tweet) {
-      //console.log(tweet);
+      // console.log(tweet);
 
       // search the twitter text to see if it matches any of the keywords
       var keywords = [];
       var text = tweet.text.toLowerCase();
-      if ( (text.search('health') != -1) && (text.search('center') != -1) ){
-        keywords.push("health center");
+
+      if ( (text.search('doctor') != -1) /*&& (text.search('office') != -1)*/ ){
+        keywords.push("doctor");
       }
-      if ( text.search('hospital') != -1){
+
+      if ( /*(text.search('medical') != -1)  &&*/ (text.search('hospital') != -1) ){
         keywords.push("hospital");
       }
-      if ( text.search('medical') != -1 ){
-        keywords.push("medical");
+
+      if ( /*(text.search('cancer') != -1) &&*/ (text.search('patients') != -1) ){
+        keywords.push("patients");
       }
 
       var tweetDoc = new Document({
@@ -83,7 +86,7 @@ app.io.route('ready', function(req) {
           return console.log(err);
         }
         else {
-          console.log(tweet);
+          // console.log(tweet);
           req.io.emit('tweet-route', {
             message: tweet
           });
@@ -93,7 +96,7 @@ app.io.route('ready', function(req) {
 
   // Asking database how many total tweets it has every 5 seconds, then sending it to client.
   setInterval(function(){
-
+    
     Document.count(function(err, count) {
       if (err) return console.error(err);
       var total = count;
@@ -104,39 +107,40 @@ app.io.route('ready', function(req) {
 
   }, 500);
 
-  // setInterval(function(){
+  var total = 0;
+  var keyOne = 0;
+  var keyTwo = 0;
+  var keyThree = 0;
+  setInterval(function(){
   // Getting data for keywords chart
-    var total = 0;
-    var moneyCount = 0;
-    var cashCount = 0;
-    var dollarsCount = 0;
 
     Document.count(function(err, count) {
       if (err) return console.error(err);
       total = count;
     });
 
-    Document.count({ words: { $in: [ "text", "money" ] } } , function(err, count) {
+    Document.count({ keywords: 'doctor' } , function(err, count) {
       if (err) return console.error(err);
-      moneyCount = count/total;
+        keyOne = ((count/total)*100);
     });
 
-    Document.count({ words: { $in: [ "text", "cash" ] } } , function(err, count) {
+    Document.count({ keywords: 'hospital' } , function(err, count) {
       if (err) return console.error(err);
-      cashCount = count/total;
+        keyTwo = ((count/total)*100);
     });
 
-    Document.count({ words: { $in: [ "text", "dollars" ] } } , function(err, count) {
+    Document.count({ keywords: 'patients' } , function(err, count) {
       if (err) return console.error(err);
-      dollarsCount = count/total;
+        keyThree = ((count/total)*100);
     });
 
     req.io.emit('keywords-route', {
-          moneyPer: 35,
-          cashPer: 59,
-          dollarsPer: 40
+          keywordOne: keyOne,
+          keywordTwo: keyTwo,
+          keywordThree: keyThree 
     });
-  // }, 1000);
+
+  }, 500);
 
 });
 

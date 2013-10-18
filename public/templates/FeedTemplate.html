@@ -2,6 +2,7 @@
 	<h6 class="left">{{tweet.user[0].name}}</h6>
 	<h6 class="subheader">@{{tweet.user[0].screen_name}}</h6>
 	<p>"{{tweet.text}}"</p>
-	<span>location: {{tweet.user[0].location}} | <i>{{tweet.created_at}}</i></span>
-	<span ng-repeat="keyword in keywords" ng-class="keyword">{{keyword}}</span>
+	<p>location: {{tweet.user[0].location}} / <i>{{tweet.created_at}}</i></p>
+	<br>
+	<span ng-repeat="keyword in tweet.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'label': keyword == 'patients'}">{{keyword}}</span>
 </div>

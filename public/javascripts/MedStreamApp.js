@@ -3,14 +3,36 @@ var MedStreamApp = angular.module('MedStream', [])
   .factory('SocketFactory', function(){
 
     //instantiate client-side socket connection
-    return io.connect();
+    var socket = io.connect();
+    socket.emit('ready');
+    
+    return socket;
 
   })
   .factory('KeywordChartFactory', function(){
 
-    //instantiate chart.js
-    //Get context with jQuery - using jQuery's .get() method.
-    return $("#KeywordChart").get(0).getContext("2d");
+    var data = [ ["doctor", 0], ["hospital", 0], ["patients", 0] ];
+
+    //instantiate flot.js
+    var plot = $.plot("#KeywordChart", [ data ], {
+      series: {
+        bars: {
+          show: true,
+          barWidth: 0.5,
+          align: "center"
+        }
+      },
+      xaxis: {
+        mode: "categories",
+        tickLength: 0
+      },
+      yaxis: {
+        min: 0,
+        max: 60
+      }
+    });
+
+    return plot;
 
   })
   .filter('reverse', function() {
@@ -21,30 +43,22 @@ var MedStreamApp = angular.module('MedStream', [])
 
 //---- FEED CONTROLLER -----//
 MedStreamApp.controller('FeedController', function FeedController($scope, SocketFactory) {
-  // send ready signal to server.
-  SocketFactory.emit('ready');
-
   //instantiate variables
   $scope.twitterfeed = [];
-  $scope.keywords = [];
 
   // When socket receives tweet, add to the recent tweet array
   SocketFactory.on('tweet-route', function(data){
-    if ($scope.twitterfeed.length > 20)
+    if ($scope.twitterfeed.length > 30)
     {
       $scope.twitterfeed.shift();
     }
     $scope.twitterfeed.push(data.message);
-    $scope.keywords = data.message.keywords;
     $scope.$apply();
   });
 });
 
 //---- TOTAL TWEETS CONTROLLER -----//
 MedStreamApp.controller('TotalTweetsController', function TotalTweetsController($scope, SocketFactory) {
-  // send ready signal to server.
-  SocketFactory.emit('ready');
-
   //instantiate variables
   $scope.totalTweets = 0;
 
@@ -57,25 +71,11 @@ MedStreamApp.controller('TotalTweetsController', function TotalTweetsController(
 
 //---- KEYWORD CHART CONTROLLER -----//
 MedStreamApp.controller('KeywordChartController', function KeywordChartController($scope, SocketFactory, KeywordChartFactory) {
-  // send ready signal to server.
-  SocketFactory.emit('ready');
-
   // When socket receives tweet, add to the recent tweet array
   SocketFactory.on('keywords-route', function(data){
-      // instantiate data
-      var chartData = {
-        labels : ["health center", "medical", "irvine center"],
-        datasets : [
-          {
-            fillColor : "rgba(220,220,220,0.5)",
-            strokeColor : "rgba(220,220,220,1)",
-            data : [0, 0, 2]
-          }
-        ]
-      };
-
-    chartData.datasets[0].data = [data.moneyPer, data.cashPer, data.dollarsPer];
-    new Chart(KeywordChartFactory).Bar(chartData);
+    var newData = [ ["doctor", data.keywordOne], ["hospital", data.keywordTwo], ["patients", data.keywordThree] ];
+    KeywordChartFactory.setData([ newData ]);
+    KeywordChartFactory.draw();
   });
 
 });

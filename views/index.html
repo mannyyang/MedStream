@@ -14,141 +14,40 @@
 <body ng-app="MedStream">
 <!-- START BODY -->
 
-  <!-- Header and Nav -->
-  <nav class="top-bar">
-    <ul class="title-area">
-      <!-- Title Area -->
-      <li class="name">
-        <h1>
-          <a href="#">
-            CASH
-          </a>
-        </h1>
-      </li>
-      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-    </ul>
- 
-    <section class="top-bar-section">
-      <!-- Left Nav Section -->
-      <ul class="left">
-        <li class="divider"></li>
-        <li class="has-dropdown">
-          <a class="active" href="#">MedStream</a>
-          <ul class="dropdown">
-            <li><label>Section Name</label></li>
-            <li><a href="#" class="">Dropdown Level 1</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li class="divider"></li>
-            <li><label>Section Name</label></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li class="divider"></li>
-            <li><a href="#">See all &rarr;</a></li>
-          </ul>
-        </li>
-        <li class="divider"></li>
-        <li><a href="#">Menu #1</a></li>
-        <li class="divider"></li>
-        <li class="has-dropdown">
-          <a href="#">Menu #2</a>
-          <ul class="dropdown">
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li class="divider"></li>
-            <li><a href="#">See all &rarr;</a></li>
-          </ul>
-        </li>
-       
-      </ul>
- 
-      <!-- Right Nav Section -->
-      <ul class="right">
-        <li class="divider"></li>
-        <li class="has-dropdown">
-          <a href="#">Menu #3</a>
-          <ul class="dropdown">
-            <li><label>Section Name</label></li>
-            <li class="has-dropdown">
-              <a href="#" class="">Has Dropdown, Level 1</a>
-              <ul class="dropdown">
-                <li><a href="#">Dropdown Options</a></li>
-                <li><a href="#">Dropdown Options</a></li>
-                <li class="has-dropdown">
-                  <a href="#">Has Dropdown, Level 2</a>
-                  <ul class="dropdown test">
-                    <li><a href="#">Subdropdown Option</a></li>
-                    <li><a href="#">Subdropdown Option</a></li>
-                    <li><a href="#">Subdropdown Option</a></li>
-                  </ul>
-                </li>
-                <li><a href="#">Subdropdown Option</a></li>
-                <li><a href="#">Subdropdown Option</a></li>
-                <li><a href="#">Subdropdown Option</a></li>
-              </ul>
-            </li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li class="divider"></li>
-            <li><label>Section Name</label></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li class="divider"></li>
-            <li><a href="#">See all &rarr;</a></li>
-          </ul>
-        </li>
-        <li class="divider"></li>
-        <li><a href="#">CREAM</a></li>
-        <li class="divider"></li>
-        <li class="has-dropdown">
-          <a href="#">!</a>
-          <ul class="dropdown">
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li class="divider"></li>
-            <li><a href="#">See all &rarr;</a></li>
-          </ul>
-        </li>
-      </ul>
-    </section>
-  </nav>
- 
-  <!-- End Header and Nav -->
+  <div class="row">
+    <div class="large-12 columns">
+      <p></p>
+    </div>
+  </div>
  
   <!-- Main Grid Section -->
   <div class="row">
     <div class="large-12 columns">
       <div class="panel">
         Keywords: Any tweets from the public stream that have the words 
-        <span class="label">health center</span>,
-        <span class="label">medical</span>, or
-        <span class="label">hospital</span>
+        <span class="dark-blue label">doctor</span>,
+        <span class="yellow label">hospital</span>, or
+        <span class="label">patients</span>
       </div>
     </div>
   </div>
 
   <div class="row">
  
-    <div id="FeedContainer" class="large-7 columns container" ng-controller="FeedController">
+    <div id="FeedContainer" class="large-8 columns container" ng-controller="FeedController">
       <h2>Real Time Feed</h2>
       <div class="panel" ng-include="'/templates/FeedTemplate.html'"></div>
     </div>
 
-    <div id="TotalTweetsContainer" class="large-5 columns container" ng-controller="TotalTweetsController">
-      <h2>Total Tweets</h2>
-      <div class="panel" ng-include="'/templates/TotalTweetsTemplate.html'">
-
-      </div>
+    <div id="TotalTweetsContainer" class="large-4 columns container" ng-controller="TotalTweetsController">
+      <h2>Total</h2>
+      <div class="panel" ng-include="'/templates/TotalTweetsTemplate.html'"></div>
     </div>
 
-    <div id="KeywordChartContainer" class="large-5 columns container" ng-controller="KeywordChartController">
+    <div id="KeywordChartContainer" class="large-4 columns container" ng-controller="KeywordChartController">
       <h2>Keyword %s</h2>
       <div class="panel">
-        <canvas id="KeywordChart" width="350" height="375"></canvas>
+        <div id="KeywordChart"></div>
       </div>
     </div>
 
@@ -182,7 +81,8 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/javascripts/angular/angular.js"></script>
-  <script src="/javascripts/chartjs/chart.js"></script>
+  <script src="/javascripts/flot/jquery.flot.min.js"></script>
+  <script src="/javascripts/flot/jquery.flot.categories.js"></script>
   <script src="/javascripts/MedStreamApp.js"></script>
   <script>
   document.write('<script src=' +
@@ -191,16 +91,6 @@
   </script>
   <script src="/javascripts/foundation/foundation.js"></script>
 
-<!-- SCRIPTS TO USE IF NEEDED -->
-  <script src="javascripts/foundation/foundation.alerts.js"></script>
-  <script src="javascripts/foundation/foundation.clearing.js"></script>
-  <script src="javascripts/foundation/foundation.cookie.js"></script>
-  <script src="javascripts/foundation/foundation.dropdown.js"></script>
-  <script src="javascripts/foundation/foundation.forms.js"></script>
-  <script src="javascripts/foundation/foundation.reveal.js"></script>
-  <script src="javascripts/foundation/foundation.section.js"></script>
-  <script src="javascripts/foundation/foundation.tooltips.js"></script>
-  <script src="javascripts/foundation/foundation.topbar.js"></script>
   <script>
     $(document).foundation();
   </script>

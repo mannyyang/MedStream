@@ -8,7 +8,7 @@
 /*------  Feed Styles  -------*/
 /*** Feed Panel ***/
 #FeedContainer .panel{
-	max-height: 675px;
+	max-height: 600px;
 	overflow: auto;
 }
 
@@ -25,22 +25,28 @@
 }
 #FeedContainer p {
 	padding: 5px 0;
-	margin-bottom: 10px;
+	margin-bottom: 0px;
 }
 
 /*------  Total Tweets Styles  -------*/
 /*** Total Tweet Panel ***/
-#TotalTweetsContainer .panel{
 
+
+/*------  Keyword Chart Styles  -------*/
+#KeywordChart {
+	width: 100%;
+	height: 300px;
 }
+
 
 /*------  MISC  -------*/
-.medical {
-	color: red;
+.dark-blue {
+	background-color: #011D7C;
 }
-.hospital{
-	color: green;
+.yellow {
+	background-color: #FED852;
 }
+
 .keyword {
 	font-weight: bold;
 };
