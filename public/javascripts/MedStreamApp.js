@@ -1,45 +1,72 @@
 //instantiate app for angular use
 var MedStreamApp = angular.module('MedStream', [])
-  .factory('SocketFactory', function(){
+.factory('SocketFactory', function(){
 
-    //instantiate client-side socket connection
-    var socket = io.connect();
-    socket.emit('ready');
-    
-    return socket;
+  //instantiate client-side socket connection
+  var socket = io.connect();
+  socket.emit('ready');
+  
+  return socket;
 
-  })
-  .factory('KeywordChartFactory', function(){
+})
+.factory('KeywordChartFactory', function(){
 
-    var data = [ ["doctor", 0], ["hospital", 0], ["patients", 0] ];
+  var data = [ ["doctor", 0], ["hospital", 0], ["patients", 0] ];
 
-    //instantiate flot.js
-    var plot = $.plot("#KeywordChart", [ data ], {
-      series: {
-        bars: {
-          show: true,
-          barWidth: 0.5,
-          align: "center"
-        }
-      },
-      xaxis: {
-        mode: "categories",
-        tickLength: 0
-      },
-      yaxis: {
-        min: 0,
-        max: 60
+  //instantiate flot.js
+  var plot = $.plot("#KeywordChart", [ data ], {
+    series: {
+      bars: {
+        show: true,
+        barWidth: 0.5,
+        align: "center"
       }
-    });
-
-    return plot;
-
-  })
-  .filter('reverse', function() {
-    return function(items) {
-      return items.slice().reverse();
-    };
+    },
+    grid: {
+      labelMargin: 25
+    },
+    xaxis: {
+      mode: "categories",
+      tickLength: 0,
+      min: -.5,
+      max: 2.5
+    },
+    yaxis: {
+      min: 0,
+      max: 60
+    }
   });
+
+  return plot;
+
+})
+.factory('VolumeTimeChartFactory', function(){
+
+  var data = [];
+
+  //instantiate flot.js
+  var plot = $.plot("#VolumeTimeChart", [ data ], {
+    series: {
+      lines: { show: true, fill: true },
+      points: { show: true }
+    },
+    xaxis: {
+      mode: "categories",
+    },
+    yaxis: {
+      min: 0,
+      max: 10
+    }
+  });
+
+  return plot;
+
+})
+.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  };
+});
 
 //---- FEED CONTROLLER -----//
 MedStreamApp.controller('FeedController', function FeedController($scope, SocketFactory) {
@@ -76,6 +103,23 @@ MedStreamApp.controller('KeywordChartController', function KeywordChartControlle
     var newData = [ ["doctor", data.keywordOne], ["hospital", data.keywordTwo], ["patients", data.keywordThree] ];
     KeywordChartFactory.setData([ newData ]);
     KeywordChartFactory.draw();
+  });
+
+});
+
+//---- KEYWORD CHART CONTROLLER -----//
+MedStreamApp.controller('VolumeTimeChartController', function VolumeTimeChartController($scope, SocketFactory, VolumeTimeChartFactory) {
+  // When socket receives tweet, add to the recent tweet array
+  var newData = [];
+  SocketFactory.on('volume-time-route', function(data){
+    if (newData.length > 10)
+    {
+      newData.shift();
+    }
+    newData.push( [data.todaysTime, data.countPerSec] );
+    VolumeTimeChartFactory.setData([ newData ]);
+    VolumeTimeChartFactory.setupGrid();
+    VolumeTimeChartFactory.draw();
   });
 
 });

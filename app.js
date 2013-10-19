@@ -1,5 +1,5 @@
 /*** Global Variables ***/
-var SERVER_PORT = 8081;
+var SERVER_PORT = 8080;
 var DATABASE_NAME = 'meddb';
 var COLLECTION_NAME = 'Tweets';
 
@@ -43,14 +43,17 @@ var T = new Twitter({
     access_token_secret:  '9M7yweRLlDGeMcBPHNZTUQssBnlFapmtYzWV4jf2M'
 });
 
+//*** Socket IO calls ***//
 // Setup the ready route, and emit talk event.
 app.io.route('ready', function(req) {
   
+  // number of tweets per second
+  var countPerSec = 0;
+
   // Streaming tweets and placing them in the database, then sending them to the feed
   var stream = T.stream('statuses/filter', { track: 'doctor, hospital, patients' });
   stream.on('tweet', function (tweet) {
       // console.log(tweet);
-
       // search the twitter text to see if it matches any of the keywords
       var keywords = [];
       var text = tweet.text.toLowerCase();
@@ -92,7 +95,24 @@ app.io.route('ready', function(req) {
           });
         }
       });
+
+      countPerSec++;
+
   });
+
+  // Get total count of tweets per sec
+  setInterval(function(){
+
+    var newDate = new Date();  
+
+    req.io.emit('volume-time-route', {
+          countPerSec: countPerSec,
+          todaysTime: newDate.timeNow()
+    });
+
+    countPerSec = 0;
+
+  }, 1000);
 
   // Asking database how many total tweets it has every 5 seconds, then sending it to client.
   setInterval(function(){
@@ -112,8 +132,8 @@ app.io.route('ready', function(req) {
   var keyTwo = 0;
   var keyThree = 0;
   setInterval(function(){
-  // Getting data for keywords chart
 
+  // Getting data for keywords chart
     Document.count(function(err, count) {
       if (err) return console.error(err);
       total = count;
@@ -143,6 +163,30 @@ app.io.route('ready', function(req) {
   }, 500);
 
 });
+
+//*** Helper Functions ***//
+// pass in the 'created_at' string returned from twitter //
+function parseTwitterDate($stamp)
+{   
+// convert to local string and remove seconds and year //   
+  var date = new Date(Date.parse($stamp)).toLocaleString().substr(0, 16);
+// get the two digit hour //
+  var hour = date.substr(-5, 2);
+// convert to AM or PM //
+  var ampm = hour<12 ? ' AM' : ' PM';
+  if (hour>12) hour-= 12;
+  if (hour==0) hour = 12;
+// return the formatted string //
+  var time = [date.substr(0, 11), hour, date.substr(13), ampm];
+  return time;
+}
+
+//For todays date;
+Date.prototype.today = function(){ 
+    return ((this.getDate() < 10)?"0":"") + this.getDate() +"/"+(((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) +"/"+ this.getFullYear() 
+};
+//For the time now
+Date.prototype.timeNow = function(){ return ((this.getHours() < 10)?"0":"") + ((this.getHours()>12)?(this.getHours()-12):this.getHours()) +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds() + ((this.getHours()>12)?('PM'):'AM'); };
 
 //*** Server routing ***//
 //-- Home Page
