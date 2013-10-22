@@ -115,15 +115,29 @@ app.io.route('ready', function(req) {
   }, 1000);
 
   // Asking database how many total tweets it has every 5 seconds, then sending it to client.
+  var totalTweets = 0;
+  var todaysTweets = 0;
   setInterval(function(){
-    
+
     Document.count(function(err, count) {
       if (err) return console.error(err);
-      var total = count;
-        req.io.emit('total-tweets-route', {
-          message: total
-        });
-      });
+        totalTweets = count;
+    });
+
+    var date = new Date();
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    Document.count({created_at: {$gte: date, $lt: new Date()} }, function(err, count) {
+      if (err) return console.error(err);
+        todaysTweets = count;
+        // console.log(count);
+    });
+
+    req.io.emit('total-tweets-route', {
+      totalTweets: totalTweets,
+      todaysTweets: todaysTweets
+    });
 
   }, 500);
 

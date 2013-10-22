@@ -1,14 +1,63 @@
-.container h2 {
+/*								  		 *
+*  === MedStream Application Styles ===  *
+*								 		*/
+
+/*------  General Styles  -------*/
+h2 {
 	padding: 10px 20px;
 	margin: 0;
 	border: 1px solid #d9d9d9;
 	border-bottom: none;	
 }
+hr{
+	margin: 0;
+}
+.row {
+	max-width: 1600px;
+}
 
+/*------  Side Navigation Styles  -------*/
+#side-nav{
+	position: fixed;
+	max-width: 90px;
+	min-width: 75px;
+	height: 100%;
+	background-color: #2e3641;
+
+	cursor: pointer;
+}
+#side-nav ul.nav li{
+	min-height: 50px;
+	max-height: 90px;
+	padding: 10px;
+	background-size: 100%;
+	background-repeat: no-repeat;
+
+	font-size: 20px;
+	text-align: center;
+}
+#side-nav ul.nav li:hover{
+	opacity: .75;
+}
+
+/*#side-nav ul.nav li.dashboard{
+	background-image: url(/images/dashboard-icon.png);
+}
+#side-nav ul.nav li.search{
+	background-image: url(/images/search-icon.png);
+}*/
+
+/*------  Button For Navigation Styles  -------*/
+#sidebar-link{
+	margin: 10px 0px;
+}
+#sidebar-link i{
+	margin-left: 10px;
+}
 /*------  Feed Styles  -------*/
 /*** Feed Panel ***/
 #FeedContainer .panel{
-	max-height: 600px;
+	max-height: 625px;
 	overflow: auto;
 }
 
@@ -30,18 +79,21 @@
 
 /*------  Total Tweets Styles  -------*/
 /*** Total Tweet Panel ***/
-
+.total-tweets{
+	max-height: 275px;
+}
+.total-tweets h3{
+	padding-top: 15px;
+}
 
 /*------  Keyword Chart Styles  -------*/
 #KeywordChart {
-	width: 100%;
-	height: 300px;
+	height: 275px;
 }
 
 /*------  Volume Time Chart Styles  -------*/
 #VolumeTimeChart {
-	width: 100%;
-	height: 350px;
+	height: 325px;
 }
 
 /*------  MISC  -------*/

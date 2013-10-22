@@ -8,84 +8,101 @@
 
   <link rel="stylesheet" href="/stylesheets/foundation/normalize.css" />
   <link rel="stylesheet" href="/stylesheets/foundation/foundation.css" />
+  <link rel="stylesheet" href="/stylesheets/foundation/offcanvas.css" />
+  <link rel="stylesheet" href="/stylesheets/font-awesome.css" />
   <link rel="stylesheet" href="/stylesheets/style.css" />
 
 </head>
 <body ng-app="MedStream">
 <!-- START BODY -->
 
-  <div class="row">
-    <div class="large-12 columns">
-      <p></p>
-    </div>
+  <!-- START SIDE NAV -->  
+  <div id="side-nav" role="complementary">
+    <ul class="nav">
+      <li><a href="#"><i class="icon-dashboard"></i></a></li>
+      <li><a href="#"><i class="icon-search"></i></a></li>
+    </ul>
   </div>
- 
-  <!-- Main Grid Section -->
-  <div class="row">
-    <div class="large-12 columns">
-      <div class="panel">
-        Keywords: Any tweets from the public stream that have the words 
-        <span class="dark-blue label">doctor</span>,
-        <span class="yellow label">hospital</span>, or
-        <span class="label">patients</span>
-      </div>
-    </div>
-  </div>
+  <!-- END SIDE NAV -->
+  
+  <!-- START MAIN SECTION -->
+  <div role="main">
 
-  <div class="row">
- 
-    <div id="FeedContainer" class="large-8 columns container" ng-controller="FeedController">
-      <h2>Real Time Feed</h2>
-      <div class="panel" ng-include="'/templates/FeedTemplate.html'"></div>
-    </div>
-
-    <div id="TotalTweetsContainer" class="large-4 columns container" ng-controller="TotalTweetsController">
-      <h2>Total</h2>
-      <div class="panel" ng-include="'/templates/TotalTweetsTemplate.html'"></div>
-    </div>
-
-    <div id="KeywordChartContainer" class="large-4 columns container" ng-controller="KeywordChartController">
-      <h2>Keyword %s</h2>
-      <div class="panel">
-        <div id="KeywordChart"></div>
+    <div class="row">
+      <div class="large-12 columns">
+        <a href="#side-nav" id="sidebar-link" class="button radius" role="navigation">sidebar<i class="icon-reorder"></i></a>
       </div>
     </div>
 
-  </div>
-
-  <div class="row">
-
-    <div id="VolumeTimeChartContainer" class="large-12 columns container" ng-controller="VolumeTimeChartController">
-      <h2>Tweets Per Second</h2>
-      <div class="panel">
-        <div id="VolumeTimeChart"></div>
-      </div>
-    </div>
-
-  </div>
- 
-  <!-- End Grid Section -->
- 
-  <!-- Footer -->
- 
-  <footer class="row">
-    <div class="large-12 columns">
-      <hr />
-      <div class="row">
-        <div class="large-6 columns">
-          <p>&copy; Copyright no one at all. Go to town.</p>
-        </div>
-        <div class="large-6 columns">
-          <ul class="inline-list right">
-            <li><a href="#">Section 1</a></li>
-            <li><a href="#">Section 2</a></li>
-            <li><a href="#">Section 3</a></li>
-            <li><a href="#">Section 4</a></li>
-          </ul>
+    <!-- Main Grid Section -->
+    <div class="row">
+      <div class="large-12 columns">
+        <div class="panel">
+          Keywords: Any tweets from the public stream that have the words 
+          <span class="dark-blue label">doctor</span>,
+          <span class="yellow label">hospital</span>, or
+          <span class="label">patients</span>
         </div>
       </div>
     </div>
-  </footer>
+
+    <div class="row">
+   
+      <div id="FeedContainer" class="large-8 columns" ng-controller="FeedController">
+        <h2>Real Time Feed</h2>
+        <div class="panel" ng-include="'/templates/FeedTemplate.html'"></div>
+      </div>
+
+      <div id="TotalTweetsContainer" class="large-4 columns" ng-controller="TotalTweetsController">
+        <h2>Total</h2>
+        <div class="panel" ng-include="'/templates/TotalTweetsTemplate.html'"></div>
+      </div>
+
+      <div id="KeywordChartContainer" class="large-4 columns" ng-controller="KeywordChartController">
+        <h2>Keywords</h2>
+        <div class="panel">
+          <div id="KeywordChart"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+
+      <div id="VolumeTimeChartContainer" class="large-12 columns" ng-controller="VolumeTimeChartController">
+        <h2>Tweets Per Second</h2>
+        <div class="panel">
+          <div id="VolumeTimeChart"></div>
+        </div>
+      </div>
+
+    </div>
+   
+    <!-- End Grid Section -->
+   
+    <!-- Footer -->
+   
+    <footer class="row">
+      <div class="large-12 columns">
+        <hr />
+        <div class="row">
+          <div class="large-6 columns">
+            <p>&copy; Copyright no one at all. Go to town.</p>
+          </div>
+          <div class="large-6 columns">
+            <ul class="inline-list right">
+              <li><a href="#">Section 1</a></li>
+              <li><a href="#">Section 2</a></li>
+              <li><a href="#">Section 3</a></li>
+              <li><a href="#">Section 4</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+    
 
 <!-- SCRIPTS -->
   <script src="/javascripts/foundation/vendor/custom.modernizr.js"></script>
@@ -94,6 +111,7 @@
   <script src="/javascripts/angular/angular.js"></script>
   <script src="/javascripts/flot/jquery.flot.min.js"></script>
   <script src="/javascripts/flot/jquery.flot.categories.js"></script>
+  <script src="/javascripts/flot/jquery.flot.resize.js"></script>
   <script src="/javascripts/MedStreamApp.js"></script>
   <script>
   document.write('<script src=' +
@@ -101,6 +119,7 @@
   '.js><\/script>');
   </script>
   <script src="/javascripts/foundation/foundation.js"></script>
+  <script src="/javascripts/foundation/jquery.offcanvas.js"></script>
 
   <script>
     $(document).foundation();
