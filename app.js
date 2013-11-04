@@ -15,6 +15,7 @@ var mongoose = require('mongoose');
 var db = mongoose.connect('mongodb://localhost/' + DATABASE_NAME);
 var Document = require('./models.js').Document(db);
 var Twitter = require('twit');
+var needle = require('needle');
 
 // all environments
 app.set('views', __dirname + '/views');
@@ -46,79 +47,131 @@ var T = new Twitter({
 //*** Socket IO calls ***//
 // Setup the ready route, and emit talk event.
 app.io.route('ready', function(req) {
-  
-  // number of tweets per second
-  var countPerSec = 0;
+
+  //*** Local Variables ***//
+  // current tweets getting analyzed
+  var tweets = [];
+  // number of tweets per interval
+  var countPerInterval = 0;
+  // current number of tweets in database
+  var totalTweets = 0;
+  var todaysTweets = 0;
+  // data for keyword charts
+  var totalInDB = 0;
+  var keyOne = 0;
+  var keyTwo = 0;
+  var keyThree = 0;
 
   // Streaming tweets and placing them in the database, then sending them to the feed
   var stream = T.stream('statuses/filter', { track: 'doctor, hospital, patients' });
   stream.on('tweet', function (tweet) {
-      // console.log(tweet);
-      // search the twitter text to see if it matches any of the keywords
-      var keywords = [];
-      var text = tweet.text.toLowerCase();
 
-      if ( (text.search('doctor') != -1) /*&& (text.search('office') != -1)*/ ){
-        keywords.push("doctor");
-      }
+    // search the twitter text to see if it matches any of the keywords
+    var text = tweet.text.toLowerCase();
+    var keywords = [];
 
-      if ( /*(text.search('medical') != -1)  &&*/ (text.search('hospital') != -1) ){
-        keywords.push("hospital");
-      }
+    if ( (text.search('doctor') != -1) /*&& (text.search('office') != -1)*/ ){
+      keywords.push("doctor");
+    }
 
-      if ( /*(text.search('cancer') != -1) &&*/ (text.search('patients') != -1) ){
-        keywords.push("patients");
-      }
+    if ( /*(text.search('medical') != -1)  &&*/ (text.search('hospital') != -1) ){
+      keywords.push("hospital");
+    }
 
-      var tweetDoc = new Document({
-          id: tweet.id,
-          created_at: tweet.created_at,
-          user: [{
-            id: tweet.user.id,
-            name: tweet.user.name,
-            screen_name: tweet.user.screen_name,
-            location: tweet.user.location
-          }],
-          text: tweet.text,
-          keywords: keywords
-      });
+    if ( /*(text.search('cancer') != -1) &&*/ (text.search('patients') != -1) ){
+      keywords.push("patients");
+    }
 
-      // After tweet is saved, send to the client feed
-      tweetDoc.save(function (err, tweet) {
-        if (err) {
-          return console.log(err);
-        }
-        else {
-          // console.log(tweet);
-          req.io.emit('tweet-route', {
-            message: tweet
-          });
-        }
-      });
+    var origTweet = {
+        id: tweet.id,
+        created_at: tweet.created_at,
+        user: [{
+          id: tweet.user.id,
+          name: tweet.user.name,
+          screen_name: tweet.user.screen_name,
+          location: tweet.user.location
+        }],
+        text: tweet.text,
+        keywords: keywords,
+    };
 
-      countPerSec++;
+    tweets.push(origTweet);
 
+    countPerInterval++;
   });
 
-  // Get total count of tweets per sec
+  AnalyzeSentiment();
+  GetKeywordPercentages();
+  GetTotalTweets();
+
   setInterval(function(){
+    AnalyzeSentiment();
+    GetKeywordPercentages();
+    GetTotalTweets();
+  }, 5000);
+
+  setInterval(function(){
+    GetTweetsPerInterval();
+  }, 1000);
+
+  //*** MedStream Helper Functions ***//
+  // Analyze Sentiment of Feed Function //
+  function AnalyzeSentiment(){
+    var objTweets = {data: tweets};
+    if (tweets.length > 0){ 
+      // Use HTTP Post to send a batch of tweets set as a JSON object
+      needle.post('http://www.sentiment140.com/api/bulkClassifyJson?appid=manuely@uci.edu', JSON.stringify(objTweets), 
+      function(err, resp, body){
+          if (!err) {
+            //when response is given, create a new mongoose document for each tweet
+            for (var i = 0; i < body.data.length; i++){
+              var tweetDoc = new Document({
+                  id: body.data[i].id,
+                  created_at: body.data[i].created_at,
+                  user: [{
+                    id: body.data[i].user[0].id,
+                    name: body.data[i].user[0].name,
+                    screen_name: body.data[i].user[0].screen_name,
+                    location: body.data[i].user[0] .location
+                  }],
+                  text: body.data[i].text,
+                  keywords: body.data[i].keywords,
+                  polarity: body.data[i].polarity
+              });
+
+              // After tweet is saved, send to the client feed
+              tweetDoc.save(function (err, tweet) {
+                if (err) 
+                  return console.log(err);
+              });
+            }
+          }
+          else{
+            console.log(err);
+          }
+      });
+      tweets = [];
+    }
+  }
+  // Get the number of tweets streamed in per whatever time interval is set 
+  function GetTweetsPerInterval(){
+
+    var date = new Date();
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
 
     var newDate = new Date();  
 
     req.io.emit('volume-time-route', {
-          countPerSec: countPerSec,
+          countPerInterval: countPerInterval,
           todaysTime: newDate.timeNow()
     });
 
-    countPerSec = 0;
-
-  }, 1000);
-
-  // Asking database how many total tweets it has every 5 seconds, then sending it to client.
-  var totalTweets = 0;
-  var todaysTweets = 0;
-  setInterval(function(){
-
+    countPerInterval = 0;
+  }
+  // Get the total number of tweets of the entire database and the tweets just for today
+  function GetTotalTweets(){
     Document.count(function(err, count) {
       if (err) return console.error(err);
         totalTweets = count;
@@ -131,58 +184,65 @@ app.io.route('ready', function(req) {
     Document.count({created_at: {$gte: date, $lt: new Date()} }, function(err, count) {
       if (err) return console.error(err);
         todaysTweets = count;
-        // console.log(count);
     });
 
     req.io.emit('total-tweets-route', {
       totalTweets: totalTweets,
       todaysTweets: todaysTweets
     });
-
-  }, 500);
-
-  var total = 0;
-  var keyOne = 0;
-  var keyTwo = 0;
-  var keyThree = 0;
-  setInterval(function(){
-
-  // Getting data for keywords chart
+  }
+  // Get the percentages of each keyword that is shown in a tweet.
+  function GetKeywordPercentages(){
     Document.count(function(err, count) {
       if (err) return console.error(err);
-      total = count;
+      totalInDB = count;
     });
 
     Document.count({ keywords: 'doctor' } , function(err, count) {
       if (err) return console.error(err);
-        keyOne = ((count/total)*100);
+        keyOne = ((count/totalInDB)*100);
     });
 
     Document.count({ keywords: 'hospital' } , function(err, count) {
       if (err) return console.error(err);
-        keyTwo = ((count/total)*100);
+        keyTwo = ((count/totalInDB)*100);
     });
 
     Document.count({ keywords: 'patients' } , function(err, count) {
       if (err) return console.error(err);
-        keyThree = ((count/total)*100);
+        keyThree = ((count/totalInDB)*100);
     });
 
     req.io.emit('keywords-route', {
-          keywordOne: keyOne,
-          keywordTwo: keyTwo,
-          keywordThree: keyThree 
+      keywordOne: keyOne,
+      keywordTwo: keyTwo,
+      keywordThree: keyThree 
     });
-
-  }, 500);
+  }
 
 });
 
-//*** Helper Functions ***//
+app.io.route('refresh-route', function(req) {
+
+  GetRecentTweets();
+
+  //*** MedStream Helper Functions ***//
+  // Grab recent tweets and send them to the feed
+  function GetRecentTweets(){
+    var query = Document.find({}).sort({created_at: -1}).limit(35);
+    query.exec(function(err, recentTweets) {
+      if (err)
+        console.log(err);
+      req.io.emit('tweet-route', {
+        recentTweets: recentTweets
+      });
+    });
+  }
+});
+
+//*** Global Helper Functions ***//
 // pass in the 'created_at' string returned from twitter //
-function parseTwitterDate($stamp)
-{   
-// convert to local string and remove seconds and year //   
+function parseTwitterDate($stamp){ // convert to local string and remove seconds and year //   
   var date = new Date(Date.parse($stamp)).toLocaleString().substr(0, 16);
 // get the two digit hour //
   var hour = date.substr(-5, 2);
@@ -200,7 +260,9 @@ Date.prototype.today = function(){
     return ((this.getDate() < 10)?"0":"") + this.getDate() +"/"+(((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) +"/"+ this.getFullYear() 
 };
 //For the time now
-Date.prototype.timeNow = function(){ return ((this.getHours() < 10)?"0":"") + ((this.getHours()>12)?(this.getHours()-12):this.getHours()) +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds() + ((this.getHours()>12)?('PM'):'AM'); };
+Date.prototype.timeNow = function(){ 
+  return ((this.getHours() < 10)?"0":"") + ((this.getHours()>12)?(this.getHours()-12):this.getHours()) +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds() + ((this.getHours()>12)?('PM'):'AM'); 
+};
 
 //*** Server routing ***//
 //-- Home Page

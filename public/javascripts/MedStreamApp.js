@@ -5,6 +5,7 @@ var MedStreamApp = angular.module('MedStream', [])
   //instantiate client-side socket connection
   var socket = io.connect();
   socket.emit('ready');
+  socket.emit('refresh');
   
   return socket;
 
@@ -79,13 +80,13 @@ MedStreamApp.controller('FeedController', function FeedController($scope, Socket
   //instantiate variables
   $scope.twitterfeed = [];
 
+  $('#refresh-button').click(function(){
+    SocketFactory.emit('refresh-route');
+  });
+
   // When socket receives tweet, add to the recent tweet array
   SocketFactory.on('tweet-route', function(data){
-    if ($scope.twitterfeed.length > 30)
-    {
-      $scope.twitterfeed.shift();
-    }
-    $scope.twitterfeed.push(data.message);
+    $scope.twitterfeed = data.recentTweets;
     $scope.$apply();
   });
 });
@@ -125,7 +126,7 @@ MedStreamApp.controller('VolumeTimeChartController', function VolumeTimeChartCon
     {
       newData.shift();
     }
-    newData.push( [data.todaysTime, data.countPerSec] );
+    newData.push( [data.todaysTime, data.countPerInterval] );
     VolumeTimeChartFactory.setData([ newData ]);
     VolumeTimeChartFactory.setupGrid();
     VolumeTimeChartFactory.draw();

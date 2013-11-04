@@ -11,7 +11,8 @@ var twitterSchema = new Schema ({
 		location: String
 	}],
 	text: String,
-	keywords: []
+	keywords: [],
+	polarity: Number
 });
 
 mongoose.model('Tweets', twitterSchema);

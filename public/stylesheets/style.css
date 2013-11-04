@@ -4,16 +4,19 @@
 
 /*------  General Styles  -------*/
 h2 {
-	padding: 10px 20px;
-	margin: 0;
-	border: 1px solid #d9d9d9;
-	border-bottom: none;	
+	font-size: 25px;
 }
-hr{
+hr {
 	margin: 0;
 }
 .row {
 	max-width: 1600px;
+}
+.panel-header {
+	padding: 10px 20px;
+	margin: 0;
+	border: 1px solid #d9d9d9;
+	border-bottom: none;	
 }
 
 /*------  Side Navigation Styles  -------*/
@@ -57,25 +60,12 @@ hr{
 /*------  Feed Styles  -------*/
 /*** Feed Panel ***/
 #FeedContainer .panel{
-	max-height: 625px;
+	max-height: 600px;
 	overflow: auto;
 }
 
 /*** Tweets ***/
-#FeedContainer .tweet{
-	padding: 10px 0;
-	margin: 5px 0;
 
-	border-bottom: 1px solid #d9d9d9;
-}
-#FeedContainer .tweet h6{
-	margin-right: 10px;
-	line-height: 0;
-}
-#FeedContainer p {
-	padding: 5px 0;
-	margin-bottom: 0px;
-}
 
 /*------  Total Tweets Styles  -------*/
 /*** Total Tweet Panel ***/
@@ -103,7 +93,12 @@ hr{
 .yellow {
 	background-color: #FED852;
 }
-
 .keyword {
 	font-weight: bold;
-};
+}
+.positive {
+	background-color: green !important;
+}
+.negative {
+	background-color: red !important;
+}

@@ -1,8 +1,23 @@
-<div class="tweet" ng-repeat="tweet in twitterfeed | reverse">
-	<h6 class="left">{{tweet.user[0].name}}</h6>
-	<h6 class="subheader">@{{tweet.user[0].screen_name}}</h6>
-	<p>"{{tweet.text}}"</p>
-	<p>location: {{tweet.user[0].location}} / <i>{{tweet.created_at}}</i></p>
-	<br>
-	<span ng-repeat="keyword in tweet.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'label': keyword == 'patients'}">{{keyword}}</span>
-</div>
+
+<table class="responsive">
+	<thead>
+		<td><h6>User Name</h6></td>
+		<td><h6>Screen Name</h6></td>
+		<td><h6>Text</h6></td>
+		<td><h6>Sentiment</h6></td>
+		<td><h6>Keywords</h6></td>
+		<td><h6>User Location</h6></td>
+		<td><h6>Created At</h6></td>
+	</thead>
+	<tbody>
+		<tr class="tweet" ng-repeat="tweet in twitterfeed | reverse" ng-class="{'positive': tweet.polarity == 4, 'negative': tweet.polarity == 0}">
+			<td>{{tweet.user[0].name}}</td>
+			<td>@{{tweet.user[0].screen_name}}</td>
+			<td>{{tweet.text}}</td>
+			<td class="text-center">{{tweet.polarity}}</td>
+			<td><span ng-repeat="keyword in tweet.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'label': keyword == 'patients'}">{{keyword}}</span></td>
+			<td>{{tweet.user[0].location}}</td>
+			<td>{{tweet.created_at}}</td>
+		</tr>
+	</tbody>
+</table>
