@@ -1,4 +1,6 @@
 var mongoose = require('mongoose');
+var textSearch = require('mongoose-text-search');
+
 var Schema = mongoose.Schema;
 
 var twitterSchema = new Schema ({
@@ -13,6 +15,12 @@ var twitterSchema = new Schema ({
 	text: String,
 	keywords: []
 });
+
+// give our schema text search capabilities
+gameSchema.plugin(textSearch);
+
+// add a text index to the tags array
+gameSchema.index({ tags: 'text' });
 
 mongoose.model('Tweets', twitterSchema);
 

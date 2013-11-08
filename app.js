@@ -46,6 +46,28 @@ var T = new Twitter({
 //*** Socket IO calls ***//
 // Setup the ready route, and emit talk event.
 app.io.route('ready', function(req) {
+
+  Document.textSearch('patients', function (err, output) {
+    if (err) return console.log(err);
+
+    console.log(output);
+    // { queryDebugString: '3d||||||',
+    //   language: 'english',
+    //   results:
+    //    [ { score: 1,
+    //        obj:
+    //         { name: 'Super Mario 64',
+    //           _id: 5150993001900a0000000001,
+    //           __v: 0,
+    //           tags: [ 'nintendo', 'mario', '3d' ] } } ],
+    //   stats:
+    //    { nscanned: 1,
+    //      nscannedObjects: 0,
+    //      n: 1,
+    //      nfound: 1,
+    //      timeMicros: 77 },
+    //   ok: 1 }
+  });
   
   // number of tweets per second
   var countPerSec = 0;
