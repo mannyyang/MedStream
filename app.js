@@ -48,6 +48,29 @@ var T = new Twitter({
 // Setup the ready route, and emit talk event.
 app.io.route('ready', function(req) {
 
+  Document.textSearch('apple', function (err, output) {
+    if (err) return console.log(err);
+
+    console.log(output);
+
+    // { queryDebugString: '3d||||||',
+    //   language: 'english',
+    //   results:
+    //    [ { score: 1,
+    //        obj:
+    //         { name: 'Super Mario 64',
+    //           _id: 5150993001900a0000000001,
+    //           __v: 0,
+    //           tags: [ 'nintendo', 'mario', '3d' ] } } ],
+    //   stats:
+    //    { nscanned: 1,
+    //      nscannedObjects: 0,
+    //      n: 1,
+    //      nfound: 1,
+    //      timeMicros: 77 },
+    //   ok: 1 }
+  });
+
   //*** Local Variables ***//
   // current tweets getting analyzed
   var tweets = [];
