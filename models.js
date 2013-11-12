@@ -17,10 +17,10 @@ var twitterSchema = new Schema ({
 });
 
 // give our schema text search capabilities
-gameSchema.plugin(textSearch);
+twitterSchema.plugin(textSearch);
 
 // add a text index to the tags array
-gameSchema.index({ tags: 'text' });
+twitterSchema.index({ text: 'text' });
 
 mongoose.model('Tweets', twitterSchema);
 
