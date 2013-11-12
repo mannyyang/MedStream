@@ -48,29 +48,6 @@ var T = new Twitter({
 // Setup the ready route, and emit talk event.
 app.io.route('ready', function(req) {
 
-  Document.textSearch('apple', function (err, output) {
-    if (err) return console.log(err);
-
-    console.log(output);
-
-    // { queryDebugString: '3d||||||',
-    //   language: 'english',
-    //   results:
-    //    [ { score: 1,
-    //        obj:
-    //         { name: 'Super Mario 64',
-    //           _id: 5150993001900a0000000001,
-    //           __v: 0,
-    //           tags: [ 'nintendo', 'mario', '3d' ] } } ],
-    //   stats:
-    //    { nscanned: 1,
-    //      nscannedObjects: 0,
-    //      n: 1,
-    //      nfound: 1,
-    //      timeMicros: 77 },
-    //   ok: 1 }
-  });
-
   //*** Local Variables ***//
   // current tweets getting analyzed
   var tweets = [];
@@ -262,6 +239,20 @@ app.io.route('refresh-route', function(req) {
     });
   }
 });
+
+app.io.route('search-route', function(req) {
+
+  Document.textSearch(req.data, function (err, output) {
+    if (err) return console.log(err);
+    console.log(output.results);
+    req.io.emit('search-result-route', {
+        searchresults: output.results
+    });
+  });
+
+});
+
+
 
 //*** Global Helper Functions ***//
 // pass in the 'created_at' string returned from twitter //

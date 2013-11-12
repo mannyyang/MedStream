@@ -131,5 +131,30 @@ MedStreamApp.controller('VolumeTimeChartController', function VolumeTimeChartCon
     VolumeTimeChartFactory.setupGrid();
     VolumeTimeChartFactory.draw();
   });
+});
 
+//---- FEED CONTROLLER -----//
+MedStreamApp.controller('SearchController', function SearchController($scope, SocketFactory) {
+  //instantiate variables
+  $scope.searchresults = [];
+
+  $('#search-button').click(function(){
+    var searchWord = $('#SearchContainer input').val();
+    SocketFactory.emit('search-route', searchWord);
+  });
+
+  $(document).keypress(function(e) {
+    if(e.which == 13) {
+        var searchWord = $('#SearchContainer input').val();
+        if (searchWord.length > 0) {
+          SocketFactory.emit('search-route', searchWord);
+        }
+    }
+});
+
+  // When socket receives tweet, add to the recent tweet array
+  SocketFactory.on('search-result-route', function(data){
+    $scope.searchresults = data.searchresults;
+    $scope.$apply();
+  });
 });

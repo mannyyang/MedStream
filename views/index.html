@@ -25,6 +25,7 @@
     </ul>
   </div>
   <!-- END SIDE NAV -->
+
   
   <!-- START MAIN SECTION -->
   <div role="main">
@@ -82,6 +83,18 @@
       </div>
 
     </div>
+
+    <div class="row">
+   
+      <div id="SearchContainer" class="large-12 columns" ng-controller="SearchController">
+        <div class="panel-header" style="height: 73px;">
+          <h2 class="left">Search</h2>
+          <div id="search-button" class="button right">search</div>
+        </div>
+        <div class="large-12 columns panel" ng-include="'/templates/SearchTemplate.html'"></div>
+      </div>
+
+    </div>  
    
     <!-- End Grid Section -->
    
