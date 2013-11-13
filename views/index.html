@@ -67,6 +67,27 @@
 
     </div>
 
+       <div class="row">
+   
+      <div id="FeedContainer" class="large-8 columns" ng-controller="RSSFeedController">
+        <h2>RSS Real Time Feed</h2>
+        <div class="panel" ng-include="'/templates/RSSFeedTemplate.html'"></div>
+      </div>
+
+    <!--   <div id="TotalTweetsContainer" class="large-4 columns" ng-controller="TotalTweetsController">
+        <h2>RSS Total</h2>
+        <div class="panel" ng-include="'/templates/TotalTweetsTemplate.html'"></div>
+      </div>
+
+      <div id="KeywordChartContainer" class="large-4 columns" ng-controller="KeywordChartController">
+        <h2>RSS Keywords</h2>
+        <div class="panel">
+          <div id="KeywordChart"></div>
+        </div>
+      </div> -->
+
+    </div>
+
     <div class="row">
 
       <div id="VolumeTimeChartContainer" class="large-12 columns" ng-controller="VolumeTimeChartController">
