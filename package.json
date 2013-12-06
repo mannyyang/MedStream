@@ -12,6 +12,8 @@
     "mongodb": "*",
     "mongoose": "*",
     "twit": "*",
-    "socket.io": "*"
+    "socket.io": "*",
+    "feed-read": "*",
+    "xml2js": "*"
   }
 }
