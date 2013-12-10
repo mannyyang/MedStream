@@ -389,5 +389,8 @@ Date.prototype.timeNow = function(){
 //-- Home Page
 app.get('/', routes.index);
 
+// for UI development
+app.get('/index2.html', routes.index2);
+
 //*** Start up the server ***//
 app.listen(SERVER_PORT);

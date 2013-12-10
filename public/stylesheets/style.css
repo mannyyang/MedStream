@@ -84,11 +84,17 @@ hr {
 
 /*------  MISC  -------*/
 .dark-blue {
-	background-color: #011D7C;
+	background-color: #011D7C !important;
 }
 .yellow {
-	background-color: #FED852;
+	background-color: #FED852 !important;
 }
+
+.label {
+	background-color: #2ba8e2;
+}
+
+
 .keyword {
 	font-weight: bold;
 }
