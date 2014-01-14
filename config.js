@@ -1,6 +1,11 @@
 //--- Keywords ---//
 exports.keywords = [ 'doctor', 'patients', 'hospital' ];
 
+//--- RSS Feed URLS ---//
+exports.rssURLS = {
+	ocregister: 'http://www.ocregister.com/common/rss/rss.php?catID=23541'
+};
+
 //--- Twitter Credentials ---//
 exports.twitterCredentials = {
     consumer_key:         'Vx1Pgf8UlLKKQtzUdZz95g',

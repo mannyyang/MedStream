@@ -6,6 +6,7 @@ var MedStreamApp = angular.module('MedStream', [])
   var socket = io.connect();
   socket.emit('ready');
   socket.emit('refresh');
+  socket.emit('rss-route');
   
   return socket;
 
@@ -175,7 +176,7 @@ MedStreamApp.controller('SearchController', function SearchController($scope, So
   });
 
   // When socket receives tweet, add to the recent tweet array
-  SocketFactory.on('search-result-route', function(data){
+  SocketFactory.on('search-route', function(data){
     $scope.searchresults = data.searchresults;
     $scope.$apply();
   });
