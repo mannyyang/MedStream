@@ -1,0 +1,14 @@
+
+<ul id='current_tweets' class='medstream'>
+	<li class="tweet" ng-repeat="tweet in twitterfeed | reverse" ng-class="{'positive': tweet.polarity == 4, 'negative': tweet.polarity == 0}">
+		<h1>{{tweet.created_at}}</h1>
+		<!-- <img ng-src="{'/images/positive-sm_color.png': tweet.polarity == 4, '/images/negative-sm_color.png': tweet.polarity == 0}" /> -->
+		<span ng-repeat="keyword in tweet.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'label': keyword == 'patients'}">{{keyword}}</span>
+		<p>{{tweet.text}}</p>
+		<p class='t_user'>{{tweet.user[0].name}}  @{{tweet.user[0].screen_name}}</p>
+		<!-- <p>{{tweet.polarity}}</p> -->
+	</li>
+<ul>
+
+
+			<!-- <td>{{tweet.user[0].location}}</td> -->
