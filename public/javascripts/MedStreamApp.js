@@ -12,8 +12,7 @@ var MedStreamApp = angular.module('MedStream', [])
 })
 .factory('KeywordChartFactory', function(){
 
-  var data = [ ["doctor", 0], ["hospital", 0], ["patients", 0] ];
-  var element = $('#KeywordChart');
+  var data = [];
 
   //instantiate flot.js
   var plot = $.plot("#KeywordChart", [ data ], {
@@ -39,15 +38,12 @@ var MedStreamApp = angular.module('MedStream', [])
     }
   });
 
-  element.resize();
-
   return plot;
 
 })
 .factory('VolumeTimeChartFactory', function(){
 
-  var data = [];
-  var element = $('#VolumeTimeChart');
+  var data = [[]];
 
   //instantiate flot.js
   var plot = $.plot("#VolumeTimeChart", [ data ], {
@@ -60,11 +56,10 @@ var MedStreamApp = angular.module('MedStream', [])
     },
     yaxis: {
       min: 0,
-      // max: 9
     }
   });
 
-  element.resize();
+  $('#VolumeTimeChart').resize();
 
   return plot;
 
@@ -126,9 +121,20 @@ MedStreamApp.controller('TotalTweetsController', function TotalTweetsController(
 MedStreamApp.controller('KeywordChartController', function KeywordChartController($scope, SocketFactory, KeywordChartFactory) {
   // When socket receives tweet, add to the recent tweet array
   SocketFactory.on('keywords-route', function(data){
-    var newData = [ ["doctor", data.keywordOne], ["hospital", data.keywordTwo], ["patients", data.keywordThree] ];
-    KeywordChartFactory.setData([ newData ]);
+    var newData = [];
+
+    for (var i = 0; i < data.keywordList.length; i++){
+      var dataPoint = [];
+
+      dataPoint[0] = data.keywordList[i];
+      dataPoint[1] = data.keywordPercentages[data.keywordList[i]];
+
+      newData.push([dataPoint]);
+    }
+
+    KeywordChartFactory.setData(newData);
     KeywordChartFactory.draw();
+    $('#KeywordChart').resize();
   });
 
 });
@@ -166,11 +172,12 @@ MedStreamApp.controller('SearchController', function SearchController($scope, So
           SocketFactory.emit('search-route', searchWord);
         }
     }
-});
+  });
 
   // When socket receives tweet, add to the recent tweet array
   SocketFactory.on('search-result-route', function(data){
     $scope.searchresults = data.searchresults;
     $scope.$apply();
   });
+
 });

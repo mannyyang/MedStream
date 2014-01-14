@@ -13,7 +13,12 @@
     "mongoose": "*",
     "twit": "*",
     "socket.io": "*",
+<<<<<<< Updated upstream
     "feed-read": "*",
     "xml2js": "*"
+=======
+    "needle": "*",
+    "mongoose-text-search": "*"
+>>>>>>> Stashed changes
   }
 }
