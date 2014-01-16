@@ -264,7 +264,7 @@ function ParseRSS(rss) {
     for (var i = 0; i < config.maxItems && i < rss.rss.channel[0].item.length - 1; i++) {
       items.push({
         title: rss.rss.channel[0].item[i].title[0],
-        link: rss.rss.channel[0].item[i].guid[0]._,
+        link: rss.rss.channel[0].item[i].link[0],
         description: rss.rss.channel[0].item[i].description[0]
       });
     }
