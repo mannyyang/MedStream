@@ -63,8 +63,7 @@ function startRSSFeedParser(){
   //---RSS ROUTE---//
   app.io.route('rss-route', function(req){
     GetOCRegister(req);
-    //GetLaTimes(req);
-    //GetVoiceOfOC(req);
+    GetLaTimes(req);
     // Set Loop intervals even if there is no client
     setInterval(function(){
       GetOCRegister(req);
@@ -267,19 +266,22 @@ function ParseRSS(rss) {
   try {
     //var items = [];
     for (var i = 0; i < config.maxItems && i < rss.rss.channel[0].item.length - 1; i++) {
-      items.push({
-        title: rss.rss.channel[0].item[i].title[0],
-        link: rss.rss.channel[0].item[i].link[0],
-        description: rss.rss.channel[0].item[i].description[0]
-      });
+        items.push({
+          title: rss.rss.channel[0].item[i].title[0],
+          link: rss.rss.channel[0].item[i].link[0],
+          description: rss.rss.channel[0].item[i].description[0],
+          date: rss.rss.channel[0].item[i].pubDate[0]
+        });
     }
 
     var feed = {
       name: rss.rss.channel[0].title,
       description: rss.rss.channel[0].description,
       link: rss.rss.channel[0].link,
+      date: rss.rss.channel[0].pubDate,
       items: items
     };
+
     return feed;
   }
   catch (e) { // If not all the fields are inside the feed
@@ -337,10 +339,10 @@ function GetOCRegister(req){
           return console.error(err);
       });
 
-      for (var i = 0; i < config.maxItems; i++) {
+      for (var i = 0; i < items.length; i++) {
       var rssPosting = {
           id: null,
-          created_at: feed.pubDate,
+          created_at: feed.items[i].date,
           user: [{
             id: null,
             name: null,
@@ -397,7 +399,7 @@ function GetLaTimes(req){
           return console.error(err);
       });
 
-      for (var i = 0; i < config.maxItems; i++) {
+      for (var i = 0; i < items.length; i++) {
       var rssPosting = {
           id: null,
           created_at: feed.pubDate,
@@ -430,65 +432,7 @@ function GetLaTimes(req){
   });
 }
 
-// Parse XML Feed from Voice of OC
-function GetVoiceOfOC(req){
-  http.get(config.rssURLS.voiceofoc, function (res) {
-    var body = "";
 
-    res.on('data', function (chunk) {
-      body += chunk;
-      //---XML Data---
-      //console.log(body);
-    });
-    res.on('end', function () {
-      // Got all response, now parsing...
-
-      if (!body || res.statusCode !== 200)
-        return console.error(err);
-
-      parseXML(body, function (err, rss) {
-        if (err)
-          return console.error(err);
-
-        feed = ParseRSS(rss);
-        if (!feed)
-          feed = ParseAtom(rss);
-        if (!feed)
-          return console.error(err);
-      });
-
-      for (var i = 0; i < config.maxItems; i++) {
-      var rssPosting = {
-          id: null,
-          created_at: feed.pubDate,
-          user: [{
-            id: null,
-            name: null,
-            screen_name: null,
-            location: null
-          }],
-          title: feed.items[i].title,
-          text: feed.items[i].description,
-          link: feed.items[i].link,
-          source: "RSS",
-          keywords: null,
-          };
-
-        rssMedia.push(rssPosting);
-        
-        console.log(rssPosting);
-      }
-
-      //Send message to client
-      req.io.emit('rss-route', {
-        rssmessage: feed
-      });
-
-    });
-  }).on('error', function (error) {
-    console.log("error while getting feed", error);
-  });
-}
 // Get analytics from sentiment data
 var positive = 0.0;
 var neutral = 0.0;
