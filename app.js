@@ -1,6 +1,7 @@
 /*** Global Variables ***/
 var SERVER_PORT = 8080;
 var DATABASE_NAME = 'meddb';
+var COLLECTION_NAME = 'Media';
 
 //---Global Config File---//
 var config = require(__dirname + '/config.js');
@@ -56,10 +57,14 @@ startRSSFeedParser();
 //////////////////////////
 //-------RSS FEED-------//
 //////////////////////////
+var items = [];
+var rssMedia = [];
 function startRSSFeedParser(){
   //---RSS ROUTE---//
   app.io.route('rss-route', function(req){
     GetOCRegister(req);
+    //GetLaTimes(req);
+    //GetVoiceOfOC(req);
     // Set Loop intervals even if there is no client
     setInterval(function(){
       GetOCRegister(req);
@@ -260,7 +265,7 @@ function SearchText(req){
 // Parse the inputted RSS data
 function ParseRSS(rss) {
   try {
-    var items = [];
+    //var items = [];
     for (var i = 0; i < config.maxItems && i < rss.rss.channel[0].item.length - 1; i++) {
       items.push({
         title: rss.rss.channel[0].item[i].title[0],
@@ -277,13 +282,13 @@ function ParseRSS(rss) {
     };
     return feed;
   }
-  catch (e) { // If not all the fiels are inside the feed
+  catch (e) { // If not all the fields are inside the feed
     return null;
   }
 }
 function ParseAtom(rss) {
   try {
-    var items = [];
+    //var items = [];
     for (var i = 0; i < config.maxItems && i < rss.feed.entry.length - 1; i++) {
       items.push({
         title: rss.feed.entry[i].title[0]._,
@@ -331,6 +336,148 @@ function GetOCRegister(req){
         if (!feed)
           return console.error(err);
       });
+
+      for (var i = 0; i < config.maxItems; i++) {
+      var rssPosting = {
+          id: null,
+          created_at: feed.pubDate,
+          user: [{
+            id: null,
+            name: null,
+            screen_name: null,
+            location: null
+          }],
+          title: feed.items[i].title,
+          text: feed.items[i].description,
+          link: feed.items[i].link,
+          source: "RSS",
+          keywords: null,
+          };
+
+        rssMedia.push(rssPosting);
+        
+        console.log(rssPosting);
+      }
+
+      //Send message to client
+      req.io.emit('rss-route', {
+        rssmessage: feed
+      });
+
+    });
+  }).on('error', function (error) {
+    console.log("error while getting feed", error);
+  });
+}
+
+// Parse XML Feed from LA Times
+function GetLaTimes(req){
+  http.get(config.rssURLS.latimes, function (res) {
+    var body = "";
+
+    res.on('data', function (chunk) {
+      body += chunk;
+      //---XML Data---
+      //console.log(body);
+    });
+    res.on('end', function () {
+      // Got all response, now parsing...
+
+      if (!body || res.statusCode !== 200)
+        return console.error(err);
+
+      parseXML(body, function (err, rss) {
+        if (err)
+          return console.error(err);
+
+        feed = ParseRSS(rss);
+        if (!feed)
+          feed = ParseAtom(rss);
+        if (!feed)
+          return console.error(err);
+      });
+
+      for (var i = 0; i < config.maxItems; i++) {
+      var rssPosting = {
+          id: null,
+          created_at: feed.pubDate,
+          user: [{
+            id: null,
+            name: null,
+            screen_name: null,
+            location: null
+          }],
+          title: feed.items[i].title,
+          text: feed.items[i].description,
+          link: feed.items[i].link,
+          source: "RSS",
+          keywords: null,
+          };
+
+        rssMedia.push(rssPosting);
+        
+        console.log(rssPosting);
+      }
+
+      //Send message to client
+      req.io.emit('rss-route', {
+        rssmessage: feed
+      });
+
+    });
+  }).on('error', function (error) {
+    console.log("error while getting feed", error);
+  });
+}
+
+// Parse XML Feed from Voice of OC
+function GetVoiceOfOC(req){
+  http.get(config.rssURLS.voiceofoc, function (res) {
+    var body = "";
+
+    res.on('data', function (chunk) {
+      body += chunk;
+      //---XML Data---
+      //console.log(body);
+    });
+    res.on('end', function () {
+      // Got all response, now parsing...
+
+      if (!body || res.statusCode !== 200)
+        return console.error(err);
+
+      parseXML(body, function (err, rss) {
+        if (err)
+          return console.error(err);
+
+        feed = ParseRSS(rss);
+        if (!feed)
+          feed = ParseAtom(rss);
+        if (!feed)
+          return console.error(err);
+      });
+
+      for (var i = 0; i < config.maxItems; i++) {
+      var rssPosting = {
+          id: null,
+          created_at: feed.pubDate,
+          user: [{
+            id: null,
+            name: null,
+            screen_name: null,
+            location: null
+          }],
+          title: feed.items[i].title,
+          text: feed.items[i].description,
+          link: feed.items[i].link,
+          source: "RSS",
+          keywords: null,
+          };
+
+        rssMedia.push(rssPosting);
+        
+        console.log(rssPosting);
+      }
 
       //Send message to client
       req.io.emit('rss-route', {
