@@ -1,14 +1,15 @@
 /*** Global Variables ***/
 var SERVER_PORT = 8080;
 var DATABASE_NAME = 'meddb';
-var COLLECTION_NAME = 'Tweets';
+
+//---Global Config File---//
+var config = require(__dirname + '/config.js');
 
 /*** Module dependencies. ***/
 //---Express.io---//
 var express = require('express');
 var app = require('express.io')();
     app.http().io();
-
 var http = require('http');
 var routes = require('./routes');
 var path = require('path');
@@ -16,8 +17,6 @@ var path = require('path');
 var mongoose = require('mongoose');
 var db = mongoose.connect('mongodb://localhost/' + DATABASE_NAME);
 var Document = require('./models.js').Document(db);
-//---Global Config File---//
-var config = require(__dirname + '/config.js');
 //---Twitter stream Dependency---//
 var twitter = require('twit');
 //---HTTP Post & Get Dependency---//
@@ -46,27 +45,32 @@ mongoose.connection.on('error', function (err){
   console.log(err);
 });
 
-//////////////////////////////
-//-------TWITTER FEED-------//
-//////////////////////////////
-// start up twitter stream as soon as server starts
-
+///////////////////////////////
+//-------INTIALIZE APP-------//
+///////////////////////////////
 // Set Twitter API key, token, & secret
 var T = new twitter(config.twitterCredentials);
 startTwitterAnalytics(T);
 startRSSFeedParser();
 
+//////////////////////////
+//-------RSS FEED-------//
+//////////////////////////
 function startRSSFeedParser(){
   //---RSS ROUTE---//
   app.io.route('rss-route', function(req){
-    getOCRegister(req);
+    GetOCRegister(req);
     // Set Loop intervals even if there is no client
     setInterval(function(){
-      getOCRegister(req);
+      GetOCRegister(req);
     }, 3600000);
   });
 }
 
+//////////////////////////////
+//-------TWITTER FEED-------//
+//////////////////////////////
+// start up twitter stream as soon as server starts
 function startTwitterAnalytics(twit){
 
   // local variables
@@ -124,12 +128,14 @@ function startTwitterAnalytics(twit){
     GetTotalTweets(req);
     GetRecentTweets(req);
     GetKeywordPercentages(req);
+    GetSentimentAnalytics(req);
 
     setInterval(function(){
       GetTweetsPerInterval(req, intervalCount);
       intervalCount = 0;
       GetTotalTweets(req);
       GetKeywordPercentages(req);
+      GetSentimentAnalytics(req);
     }, 2500);
   });
 
@@ -246,7 +252,6 @@ function GetKeywordPercentages(req){
 function SearchText(req){
   Document.textSearch(req.data, function (err, output) {
     if (err) return console.log(err);
-    console.log(output.results);
     req.io.emit('search-route', {
         searchresults: output.results
     });
@@ -294,12 +299,14 @@ function ParseAtom(rss) {
     };
     return feed;
   }
-  catch (e) { // If not all the fields are inside the feed
+  catch (e) { 
+    // If not all the fields are inside the feed
     console.log(e);
     return null;
   }
 }
-function getOCRegister(req){
+// Parse XML Feed from OC Register
+function GetOCRegister(req){
   http.get(config.rssURLS.ocregister, function (res) {
     var body = "";
 
@@ -313,35 +320,56 @@ function getOCRegister(req){
 
       if (!body || res.statusCode !== 200)
         return console.error(err);
-        //return callback({message: "Invalid Feed"});
-
 
       parseXML(body, function (err, rss) {
         if (err)
           return console.error(err);
-          //return callback({message: "Invalid Feed"});
 
         feed = ParseRSS(rss);
         if (!feed)
           feed = ParseAtom(rss);
         if (!feed)
           return console.error(err);
-          //return callback({message: "Invalid Feed"});
-        //callback(err, feed);
+      });
 
-        });
-        //--Verify end of function statement--
-        // console.log("parsed RSS success");
-        // console.log(feed.name);
+      //Send message to client
+      req.io.emit('rss-route', {
+        rssmessage: feed
+      });
 
-        //Send message to client
-        req.io.emit('rss-route', {
-          rssmessage: feed
-        });
     });
   }).on('error', function (error) {
     console.log("error while getting feed", error);
   });
+}
+// Get analytics from sentiment data
+var positive = 0.0;
+var neutral = 0.0;
+var negative = 0.0;
+function GetSentimentAnalytics(req){
+
+  Document.count({polarity: 0 }, function(err, count) {
+    if (err) return console.error(err);
+    negative = (count/totalTweets)*100;
+  });
+
+  Document.count({polarity: 2 }, function(err, count) {
+    if (err) return console.error(err);
+    neutral = (count/totalTweets)*100;
+  });
+
+  Document.count({polarity: 4 }, function(err, count) {
+    if (err) return console.error(err);
+    positive = (count/totalTweets)*100;
+  });
+
+  //Send message to client
+  req.io.emit('sentiments-route', {
+    positive: positive,
+    neutral: neutral,
+    negative: negative
+  });
+
 }
 
 //For todays date;

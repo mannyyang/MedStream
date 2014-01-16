@@ -12,6 +12,10 @@ hr {
 .row {
 	max-width: 1600px;
 }
+.row .row {
+	margin-right: auto;
+	margin-left: auto;
+}
 .panel-header {
 	padding: 10px 20px;
 	margin: 0;
@@ -82,6 +86,13 @@ hr {
 	height: 325px;
 }
 
+/*------  Volume Time Chart Styles  -------*/
+.sentiment {
+	float: left;
+	width: 0%;
+	height: 50px;
+}
+
 /*------  MISC  -------*/
 .dark-blue {
 	background-color: #011D7C !important;
@@ -94,7 +105,6 @@ hr {
 	background-color: #2ba8e2;
 }
 
-
 .keyword {
 	font-weight: bold;
 }
@@ -103,4 +113,14 @@ hr {
 }
 .negative {
 	background-color: red !important;
+}
+
+.pos {
+	background-color: lightgreen;
+}
+.neu {
+	background-color: lightgrey;
+}
+.neg {
+	background-color: FireBrick;
 }

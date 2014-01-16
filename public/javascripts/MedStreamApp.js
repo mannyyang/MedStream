@@ -71,6 +71,18 @@ var MedStreamApp = angular.module('MedStream', [])
   };
 });
 
+//---- SENTIMENT ANALYTICS CONTROLLER -----//
+MedStreamApp.controller('SentimentAnalyticsController', function SentimentAnalyticsController($scope, SocketFactory) {
+
+  // When socket receives rss, add to the recent rss array
+  SocketFactory.on('sentiments-route', function(data){
+    $('.sentiment.pos').width(data.positive + '%');
+    $('.sentiment.neu').width(data.neutral + '%');
+    $('.sentiment.neg').width(data.negative + '%');
+  });
+
+});
+
 //---- RSSFEED CONTROLLER -----//
 MedStreamApp.controller('RSSFeedController', function RSSFeedController($scope, SocketFactory) {
   //instantiate variables
@@ -156,7 +168,7 @@ MedStreamApp.controller('VolumeTimeChartController', function VolumeTimeChartCon
   });
 });
 
-//---- FEED CONTROLLER -----//
+//---- SEARCH CONTROLLER -----//
 MedStreamApp.controller('SearchController', function SearchController($scope, SocketFactory) {
   //instantiate variables
   $scope.searchresults = [];
