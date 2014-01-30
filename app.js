@@ -14,6 +14,7 @@ var app = require('express.io')();
 var http = require('http');
 var routes = require('./routes');
 var path = require('path');
+var https = require('https');
 //---Database/Mongoose Dependencies---//
 var mongoose = require('mongoose');
 var db = mongoose.connect('mongodb://localhost/' + DATABASE_NAME);
@@ -67,6 +68,7 @@ function startRSSFeedParser(){
     // Set Loop intervals even if there is no client
     setInterval(function(){
       GetOCRegister(req);
+      GetLaTimes(req);
     }, 3600000);
   });
 }
@@ -105,8 +107,12 @@ function startTwitterAnalytics(twit){
           screen_name: tweet.user.screen_name,
           location: tweet.user.location
         }],
+        title: null,
         text: tweet.text,
+        link: null,
+        source: "Twitter",
         keywords: keywords,
+        polarity: null,
     };
 
     // Push the tweet into an array that will be processed for sentiment analysis
@@ -133,6 +139,7 @@ function startTwitterAnalytics(twit){
     GetRecentTweets(req);
     GetKeywordPercentages(req);
     GetSentimentAnalytics(req);
+    GetFacebook();
 
     setInterval(function(){
       GetTweetsPerInterval(req, intervalCount);
@@ -146,6 +153,13 @@ function startTwitterAnalytics(twit){
   //---REFRESH ROUTE---//
   app.io.route('refresh-route', function(req) {
     GetRecentTweets(req);
+    GetRecentRSS(req);
+  });
+  app.io.route('refreshfb-route', function(req) {
+    GetRecentfbposts(req);
+  });
+  app.io.route('refreshfb-route', function(req) {
+    GetRecentfbposts(req);
   });
 
   //---SEARCH ROUTE---//
@@ -177,8 +191,12 @@ function AnalyzeSentiment(tweets){
                   screen_name: body.data[i].user[0].screen_name,
                   location: body.data[i].user[0] .location
                 }],
+                title: null,
                 text: body.data[i].text,
+                link: null,
+                source: "Twitter",
                 keywords: body.data[i].keywords,
+                source: "twitter",
                 polarity: body.data[i].polarity
             });
 
@@ -196,7 +214,7 @@ function AnalyzeSentiment(tweets){
 }
 // Grab recent tweets and send them to the feed
 function GetRecentTweets(req){
-  var query = Document.find({}).sort({created_at: -1}).limit(35);
+  var query = Document.find({source:"twitter"}).sort({created_at: -1}).limit(35);
   query.exec(function(err, recentTweets) {
     if (err) console.log(err);
     req.io.emit('tweet-route', {
@@ -256,7 +274,7 @@ function GetKeywordPercentages(req){
 function SearchText(req){
   Document.textSearch(req.data, function (err, output) {
     if (err) return console.log(err);
-    req.io.emit('search-route', {
+    req.io.emit('search-result-route', {
         searchresults: output.results
     });
   });
@@ -266,15 +284,18 @@ function ParseRSS(rss) {
   try {
     //var items = [];
     for (var i = 0; i < config.maxItems && i < rss.rss.channel[0].item.length - 1; i++) {
-        items.push({
-          title: rss.rss.channel[0].item[i].title[0],
-          link: rss.rss.channel[0].item[i].link[0],
-          description: rss.rss.channel[0].item[i].description[0],
-          date: rss.rss.channel[0].item[i].pubDate[0]
-        });
-    }
+            items.push({
+              guid: rss.rss.channel[0].item[i].guid[0],
+              title: rss.rss.channel[0].item[i].title[0],
+              link: rss.rss.channel[0].item[i].link[0],
+              description: rss.rss.channel[0].item[i].description[0],
+              date: rss.rss.channel[0].item[i].pubDate[0]
+            });
+        }
+
 
     var feed = {
+      guid: rss.rss.channel[0].guid,
       name: rss.rss.channel[0].title,
       description: rss.rss.channel[0].description,
       link: rss.rss.channel[0].link,
@@ -309,6 +330,7 @@ function ParseAtom(rss) {
   catch (e) { 
     // If not all the fields are inside the feed
     console.log(e);
+    console.log("uknown guid");
     return null;
   }
 }
@@ -340,26 +362,62 @@ function GetOCRegister(req){
       });
 
       for (var i = 0; i < items.length; i++) {
-      var rssPosting = {
-          id: null,
-          created_at: feed.items[i].date,
-          user: [{
-            id: null,
-            name: null,
-            screen_name: null,
-            location: null
-          }],
-          title: feed.items[i].title,
-          text: feed.items[i].description,
-          link: feed.items[i].link,
-          source: "RSS",
-          keywords: null,
+        for(var i = 0; i < config.keywords.length - 1; i++){
+          var titleText = feed.items[i].title;
+          if (titleText.search(config.keywords[i]) != -1){
+            //keywords.push(config.keywords[i]);
+            console.log(titleText);
+          }
+
+        var rssPosting = {
+            id: feed.items[i].guid._,
+            created_at: feed.items[i].date,
+            user: [{
+              id: null,
+              name: null,
+              screen_name: null,
+              location: null
+            }],
+            title: feed.items[i].title,
+            text: feed.items[i].description,
+            link: feed.items[i].link,
+            source: "RSS",
+            keywords: null,
+            polarity: null,
           };
 
-        rssMedia.push(rssPosting);
-        
-        console.log(rssPosting);
+          rssMedia.push(rssPosting);
+          
+          //console.log(rssPosting);
+        }
       }
+
+
+        for (var i = 0; i < items.length; i++){
+
+          var rssDoc = new Document({
+              id: feed.items[i].guid._,
+              created_at: feed.pubDate,
+              user: [{
+                id: null,
+                name: null,
+                screen_name: null,
+                location: null
+              }],
+              title: feed.items[i].title,
+              text: feed.items[i].description,
+              link: feed.items[i].link,
+              source: "RSS",
+              keywords: null,
+              polarity: null,
+          });
+
+          // After RSS posting is saved, send to the client feed
+          rssDoc.save(function (err, feed) {
+            if (err) return console.log(err);
+          });
+        }
+        
 
       //Send message to client
       req.io.emit('rss-route', {
@@ -400,6 +458,10 @@ function GetLaTimes(req){
       });
 
       for (var i = 0; i < items.length; i++) {
+        var idTemp = feed.items[i].link;
+         var rssId = idTemp.split("-");
+         //console.log(rssId[1]);
+
       var rssPosting = {
           id: null,
           created_at: feed.pubDate,
@@ -414,12 +476,37 @@ function GetLaTimes(req){
           link: feed.items[i].link,
           source: "RSS",
           keywords: null,
+          polarity: null,
           };
 
         rssMedia.push(rssPosting);
         
-        console.log(rssPosting);
+        //console.log(rssPosting);
       }
+        // for (var i = 0; i < items.length; i++){
+        //     var rssDoc = new Document({
+        //         id: null,
+        //         created_at: feed.pubDate,
+        //         user: [{
+        //           id: null,
+        //           name: null,
+        //           screen_name: null,
+        //           location: null
+        //         }],
+        //         title: feed.items[i].title,
+        //         text: feed.items[i].description,
+        //         link: feed.items[i].link,
+        //         source: "RSS",
+        //         keywords: null,
+        //         polarity: null,
+        //     });
+
+        //     // After RSS posting is saved, send to the client feed
+        //     rssDoc.save(function (err, feed) {
+        //       if (err) return console.log(err);
+        //     });
+        // }
+      
 
       //Send message to client
       req.io.emit('rss-route', {
@@ -432,6 +519,106 @@ function GetLaTimes(req){
   });
 }
 
+
+// Grab recent RSS postings and send them to the feed
+function GetRecentRSS(req){
+  var query = Document.find({source: "RSS"}).sort({created_at: -1}).limit(35);
+  query.exec(function(err, recentRSS) {
+    if (err) console.log(err);
+    req.io.emit('rssPosting-route', {
+      recentRSS: recentRSS
+    });
+  });
+}
+
+// Get facebook public status update posts and save them to db
+function GetFacebook(){
+  var facebookKeyword = "";
+    for (var i = 0; i < config.keywords.length; i++){
+      facebookKeyword += config.keywords[i]+" ";
+    }
+    // console.log("facebookKeyword : "+facebookKeyword);
+  var facebookUrl = config.facebookURL.facebook+'&access_token='+config.facebookCredentials.access_token+'&q='+facebookKeyword;
+  var facebookItems = [];
+
+  https.get(facebookUrl, function (res) {
+    var body = "";
+
+    res.on('data', function (chunk) {
+      body += chunk;
+    });
+
+    res.on('end', function () {
+      // Got all response, now parsing...
+
+      if (!body || res.statusCode !== 200){
+        return console.error(err);
+      }
+        //return callback({message: "Invalid Feed"});
+
+        var json = JSON.parse(body);
+        // var key, count = 0;
+        // for(key in json.data) {
+        //   if(json.data.hasOwnProperty(key)) {
+        //     count++;
+        //   }
+        // }
+        // console.log("json length : "+count);
+
+
+        json.data.filter(function (post){
+          if(post.type == "status"){
+
+            var fbPosting = new Document({
+              id: post.id,
+              created_at: post.created_time,
+              user: [{
+                id: post.from.id,
+                name: post.from.name,
+                screen_name: null,
+                location: null
+              }],
+              title: null,
+              text: post.message,
+              link: null,
+              source: "facebook",
+              keywords: null,
+              polarity: null,
+            });
+
+            fbPosting.save(function(err,facebook){
+              if(err)return console.log(err);
+              else
+                console.log("parsed Facebook success");
+            });
+
+            // facebookItems.push(fbPosting);
+
+            // console.log(fbPosting);
+          }
+
+        });
+
+        //--Verify end of function statement--
+        // if(facebookItems.length == 0)
+        //   console.log("No facebook items added!");
+
+      });
+
+});
+}
+
+  // Grab recent facebook posts from db and send them to the feed
+  function GetRecentfbposts(req){
+    var query = Document.find({source:"facebook"}).sort({created_at: -1}).limit(35);
+    query.exec(function(err, recentfbposts) {
+      if (err)
+        console.log(err);
+      req.io.emit('facebook-route', {
+        recentfbposts: recentfbposts
+      });
+    });
+  }
 
 // Get analytics from sentiment data
 var positive = 0.0;

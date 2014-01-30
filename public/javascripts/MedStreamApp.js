@@ -7,6 +7,7 @@ var MedStreamApp = angular.module('MedStream', [])
   socket.emit('ready');
   socket.emit('refresh');
   socket.emit('rss-route');
+
   
   return socket;
 

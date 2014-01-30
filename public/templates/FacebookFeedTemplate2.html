@@ -1,0 +1,12 @@
+<ul id=current_bfposts class=medstream>
+
+
+ 	<li class="fbpost" ng-repeat="json in facebookfeed | reverse">
+		<h1>{{json.created_at}}</h1>
+		<!-- <img ng-src="{'/images/positive-sm_color.png': tweet.polarity == 4, '/images/negative-sm_color.png': tweet.polarity == 0}" /> -->
+<!-- 		<span ng-repeat="keyword in tweet.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'label': keyword == 'patients'}">{{keyword}}</span>
+ -->			<p>{{json.text}}</p>
+		<p class='t_user'>{{json.user[0].name}}</p>
+
+	</li>
+<ul>
