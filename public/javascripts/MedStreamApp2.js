@@ -132,6 +132,23 @@ MedStreamApp.controller('FeedController', function FeedController($scope, Socket
   });
 });
 
+//---- Facebook FEED CONTROLLER -----//
+MedStreamApp.controller('FacebookFeedController', function FacebookFeedController($scope, SocketFactory) {
+  //instantiate variables
+  $scope.facebookfeed = [];
+
+  $('#refreshfb-button').click(function(){
+    SocketFactory.emit('refreshfb-route');
+  });
+
+  // When socket receives fb post, add to the recent post array
+  SocketFactory.on('facebook-route', function(data){
+    // $scope.facebookfeed = data.recentfbposts;
+    $scope.facebookfeed = data.recentfbposts;
+    $scope.$apply();
+  });
+});
+
 //---- TOTAL TWEETS CONTROLLER -----//
 MedStreamApp.controller('TotalTweetsController', function TotalTweetsController($scope, SocketFactory) {
   //instantiate variables

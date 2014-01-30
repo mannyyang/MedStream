@@ -7,6 +7,16 @@ exports.rssURLS = {
 	latimes: 'http://feeds.latimes.com/latimes/news/local',
 };
 
+//--- Facebook Feed URL ---//
+exports.facebookURL = {
+	facebook: 'https://graph.facebook.com/search?type=post&metadata=true'
+};
+
+//--- Facebook Credentials ---//
+exports.facebookCredentials = {
+	access_token: '321837561287973|PjQbEttq8t3K5gt20_2lWHgj5gg'
+};
+
 //--- Twitter Credentials ---//
 exports.twitterCredentials = {
     consumer_key:         'Vx1Pgf8UlLKKQtzUdZz95g',

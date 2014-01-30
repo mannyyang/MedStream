@@ -121,6 +121,14 @@
         <h3 class='medstream'>Current Tweets</h3>
         <div class="panel" id='tweet_panel' ng-include="'/templates/FeedTemplate2.html'"></div>
       </div>
+
+      <!-- current facebook posts -->
+      <div id="refreshfb-button" class="button right">refresh</div>
+
+      <div id="FbFeedContainer" class="large-4 columns" ng-controller="FacebookFeedController">
+        <h3 class='medstream'>Current Facebook Posts</h3>
+        <div class="panel" id='tweet_panel' ng-include="'/templates/FacebookFeedTemplate2.html'"></div>
+      </div>
       <!-- end right column -->
 
     </div>
