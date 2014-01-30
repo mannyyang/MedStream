@@ -1,7 +1,6 @@
 
 <ul id='current_rss' class='medstream'>
 	<li class="rssPosting" ng-repeat="rssPosting in rssPostingFeed | reverse">
-		<h1>{{rssPosting.title}}</h1>
-		<p>{{rssPosting.link}}</p>
+		<a href="{{rssPosting.link}}"> <h1>"{{rssPosting.title}}"</h1></a>
 	</li>
 <ul>
