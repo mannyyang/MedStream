@@ -12,9 +12,9 @@ var express = require('express');
 var app = require('express.io')();
     app.http().io();
 var http = require('http');
+var https = require('https');
 var routes = require('./routes');
 var path = require('path');
-var https = require('https');
 //---Database/Mongoose Dependencies---//
 var mongoose = require('mongoose');
 var db = mongoose.connect('mongodb://localhost/' + DATABASE_NAME);
