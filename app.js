@@ -364,12 +364,12 @@ function GetOCRegister(req){
       });
 
       for (var i = 0; i < items.length; i++) {
-        for(var i = 0; i < config.keywords.length - 1; i++){
-          var titleText = feed.items[i].title;
-          if (titleText.search(config.keywords[i]) != -1){
-            //keywords.push(config.keywords[i]);
-            console.log(titleText);
-          }
+        // for(var i = 0; i < config.keywords.length - 1; i++){
+        //   var titleText = feed.items[i].title;
+        //   if (titleText.search(config.keywords[i]) != -1){
+        //     //keywords.push(config.keywords[i]);
+        //     console.log("What" + titleText);
+        //   }
 
         var rssPosting = {
             id: feed.items[i].guid._,
@@ -392,7 +392,7 @@ function GetOCRegister(req){
           
           //console.log(rssPosting);
         }
-      }
+      
 
 
         for (var i = 0; i < items.length; i++){
@@ -460,12 +460,9 @@ function GetLaTimes(req){
       });
 
       for (var i = 0; i < items.length; i++) {
-        var idTemp = feed.items[i].link;
-         var rssId = idTemp.split("-");
-         //console.log(rssId[1]);
 
       var rssPosting = {
-          id: null,
+          id: feed.items[i].guid._,
           created_at: feed.pubDate,
           user: [{
             id: null,
@@ -485,30 +482,30 @@ function GetLaTimes(req){
         
         //console.log(rssPosting);
       }
-        // for (var i = 0; i < items.length; i++){
-        //     var rssDoc = new Document({
-        //         id: null,
-        //         created_at: feed.pubDate,
-        //         user: [{
-        //           id: null,
-        //           name: null,
-        //           screen_name: null,
-        //           location: null
-        //         }],
-        //         title: feed.items[i].title,
-        //         text: feed.items[i].description,
-        //         link: feed.items[i].link,
-        //         source: "RSS",
-        //         keywords: null,
-        //         polarity: null,
-        //     });
+      for (var i = 0; i < items.length; i++){
+          var rssDoc = new Document({
+              id: feed.items[i].guid._,
+              created_at: feed.pubDate,
+              user: [{
+                id: null,
+                name: null,
+                screen_name: null,
+                location: null
+              }],
+              title: feed.items[i].title,
+              text: feed.items[i].description,
+              link: feed.items[i].link,
+              source: "RSS",
+              keywords: null,
+              polarity: null,
+          });
 
-        //     // After RSS posting is saved, send to the client feed
-        //     rssDoc.save(function (err, feed) {
-        //       if (err) return console.log(err);
-        //     });
-        // }
-      
+          // After RSS posting is saved, send to the client feed
+          rssDoc.save(function (err, feed) {
+            if (err) return console.log(err);
+          });
+      }
+    
 
       //Send message to client
       req.io.emit('rss-route', {
