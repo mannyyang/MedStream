@@ -3,7 +3,18 @@ exports.keywords = [ 'doctor', 'patients', 'hospital' ];
 
 //--- RSS Feed URLS ---//
 exports.rssURLS = {
-	ocregister: 'http://www.ocregister.com/common/rss/rss.php?catID=23541'
+	ocregister: 'http://www.ocregister.com/common/rss/rss.php?catID=23541',
+	latimes: 'http://feeds.latimes.com/latimes/news/local',
+};
+
+//--- Facebook Feed URL ---//
+exports.facebookURL = {
+	facebook: 'https://graph.facebook.com/search?type=post&metadata=true'
+};
+
+//--- Facebook Credentials ---//
+exports.facebookCredentials = {
+	access_token: '321837561287973|PjQbEttq8t3K5gt20_2lWHgj5gg'
 };
 
 //--- Twitter Credentials ---//
@@ -16,4 +27,4 @@ exports.twitterCredentials = {
 
 //--- RSS Feed ---//
 exports.cacheTime = 60 * 60 * 1000; // 1 hour in milliseconds
-exports.maxItems = 10;
+exports.maxItems = 20; //currently 9 works for OC Register, issue with empty titles (throws error)

@@ -6,6 +6,8 @@ var MedStreamApp = angular.module('MedStream', [])
   var socket = io.connect();
   socket.emit('ready');
   socket.emit('refresh');
+  socket.emit('rssPosting-route');
+
   
   return socket;
 
@@ -101,17 +103,33 @@ return chart;
 });
 
 //---- RSSFEED CONTROLLER -----//
-MedStreamApp.controller('RSSFeedController', function RSSFeedController($scope, SocketFactory) {
-  //instantiate variables
-  $scope.rssfeed = [];
+// MedStreamApp.controller('RSSFeedController', function RSSFeedController($scope, SocketFactory) {
+//   //instantiate variables
+//   $scope.rssfeed = [];
 
-  // When socket receives rss, add to the recent rss array
-  SocketFactory.on('rss-route', function(data){
-    if ($scope.rssfeed.length > 30)
-    {
-      $scope.rssfeed.shift();
-    }
-    $scope.rssfeed.push(data.rssmessage);
+//   // When socket receives rss, add to the recent rss array
+//   SocketFactory.on('rss-route', function(data){
+//     if ($scope.rssfeed.length > 30)
+//     {
+//       $scope.rssfeed.shift();
+//     }
+//     $scope.rssfeed.push(data.rssmessage);
+//     $scope.$apply();
+//   });
+// });
+
+//---- RSSFEED CONTROLLER -----//
+MedStreamApp.controller('RSSPostingController', function RSSPostingController($scope, SocketFactory) {
+  //instantiate variables
+  $scope.rssPostingFeed = [];
+
+  $('#refresh-button').click(function(){
+    SocketFactory.emit('refresh-route');
+  });
+
+  // When socket receives tweet, add to the recent tweet array
+  SocketFactory.on('rssPosting-route', function(data){
+    $scope.rssPostingFeed = data.recentRSS;
     $scope.$apply();
   });
 });
@@ -128,6 +146,23 @@ MedStreamApp.controller('FeedController', function FeedController($scope, Socket
   // When socket receives tweet, add to the recent tweet array
   SocketFactory.on('tweet-route', function(data){
     $scope.twitterfeed = data.recentTweets;
+    $scope.$apply();
+  });
+});
+
+//---- Facebook FEED CONTROLLER -----//
+MedStreamApp.controller('FacebookFeedController', function FacebookFeedController($scope, SocketFactory) {
+  //instantiate variables
+  $scope.facebookfeed = [];
+
+  $('#refreshfb-button').click(function(){
+    SocketFactory.emit('refreshfb-route');
+  });
+
+  // When socket receives fb post, add to the recent post array
+  SocketFactory.on('facebook-route', function(data){
+    // $scope.facebookfeed = data.recentfbposts;
+    $scope.facebookfeed = data.recentfbposts;
     $scope.$apply();
   });
 });

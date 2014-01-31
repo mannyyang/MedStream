@@ -3,8 +3,8 @@ var textSearch = require('mongoose-text-search');
 
 var Schema = mongoose.Schema;
 
-var twitterSchema = new Schema ({
-	id: {type: Number, index: {unique: true, dropDups: true}},
+var mediaSchema = new Schema ({
+	id: {type: String, index: {unique: true, dropDups: true}},
 	created_at: Date,
 	user: [{
 		id: Number,
@@ -12,19 +12,22 @@ var twitterSchema = new Schema ({
 		screen_name: String,
 		location: String
 	}],
+	title: String,
 	text: String,
+	link: String,
+	source: String,
 	keywords: [],
 	polarity: Number
 });
 
 // give our schema text search capabilities
-twitterSchema.plugin(textSearch);
+mediaSchema.plugin(textSearch);
 
 // add a text index to the tags array
-twitterSchema.index({ text: 'text' });
+mediaSchema.index({ text: 'text' });
 
-mongoose.model('Tweets', twitterSchema);
+mongoose.model('Media', mediaSchema);
 
 exports.Document = function(db) {
-  return db.model('Tweets');
+  return db.model('Media');
 };

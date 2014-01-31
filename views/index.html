@@ -50,12 +50,31 @@
 
     <div class="row">
    
-      <div id="FeedContainer" class="large-12 columns" ng-controller="RSSFeedController">
-        <div class="panel-header" style="height: 73px;"><h2 class="left">RSS Feed</h2>
+      <div id="RSSFeedContainer" class="large-12 columns" ng-controller="RSSFeedController">
+        <div class="panel-header" style="height: 70px;">
+          <h2 class="left">RSS Feed</h2>
+        </div>
         <div class="large-12 columns panel" ng-include="'/templates/RSSFeedTemplate.html'"></div>
       </div>
 
-    </div>  
+    </div>
+
+    <div class="row">
+   
+      <div id="SentimentAnalyticsContainer" class="large-12 columns" ng-controller="SentimentAnalyticsController">
+        <div class="panel-header" style="height: 70px;">
+          <h2 class="left">Sentiment Analysis</h2>
+        </div>
+        <div class="large-12 columns panel">
+          <div class="overall">
+            <div class="sentiment neg"></div>
+            <div class="sentiment neu"></div>
+            <div class="sentiment pos"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>   
 
     <div class="row">
    

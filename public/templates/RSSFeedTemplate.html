@@ -1,4 +1,6 @@
-<div class="rss" ng-repeat="feed in rssfeed | reverse">
+
+
+<div class="rss" class="medstream" ng-repeat="feed in rssfeed | reverse">
 	<h6 class="left">Title:{{feed.items[0].title}}</h6>
 	<hr>
 	<p>Link: <a href="{{feed.items[0].link}}"> View Article </a> </p> 
@@ -44,5 +46,4 @@
 	<p>Link: <a href="{{feed.items[9].link}}"> View Article </a> </p> 
 
 	<br>
-	<!-- <span ng-repeat="keyword in tweet.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'label': keyword == 'patients'}">{{keyword}}</span> -->
 </div>
