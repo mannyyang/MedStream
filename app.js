@@ -46,14 +46,11 @@ mongoose.connection.on('error', function (err){
   console.log(err);
 });
 
-//////////////////////////////
-//-------TWITTER FEED-------//
-//////////////////////////////
-// start up twitter stream as soon as server starts
+//////////////////////////
+//-------RSS FEED-------//
+//////////////////////////
 
-// Set Twitter API key, token, & secret
-var T = new twitter(config.twitterCredentials);
-startTwitterAnalytics(T);
+// Start Parsing the RSS Feed
 startRSSFeedParser();
 
 function startRSSFeedParser(){
@@ -66,6 +63,16 @@ function startRSSFeedParser(){
     }, 3600000);
   });
 }
+
+
+//////////////////////////////
+//-------TWITTER FEED-------//
+//////////////////////////////
+// start up twitter stream as soon as server starts
+
+// Set Twitter API key, token, & secret
+var T = new twitter(config.twitterCredentials);
+startTwitterAnalytics(T);
 
 function startTwitterAnalytics(twit){
 
