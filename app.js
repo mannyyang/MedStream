@@ -54,6 +54,7 @@ mongoose.connection.on('error', function (err){
 var T = new twitter(config.twitterCredentials);
 startTwitterAnalytics(T);
 startRSSFeedParser();
+startFacebookAnalytics();
 
 //////////////////////////
 //-------RSS FEED-------//
@@ -126,7 +127,7 @@ function startTwitterAnalytics(twit){
     tweets = [];
   }, 5000);
 
-  ///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
   // Fill the client's dashboard with info when called //
   ///////////////////////////////////////////////////////
   // Set Loop intervals only when a client calls for it
@@ -139,7 +140,7 @@ function startTwitterAnalytics(twit){
     GetRecentTweets(req);
     GetKeywordPercentages(req);
     GetSentimentAnalytics(req);
-    GetFacebook();
+    //GetFacebook();
 
     setInterval(function(){
       GetTweetsPerInterval(req, intervalCount);
@@ -155,18 +156,130 @@ function startTwitterAnalytics(twit){
     GetRecentTweets(req);
     GetRecentRSS(req);
   });
-  app.io.route('refreshfb-route', function(req) {
-    GetRecentfbposts(req);
-  });
-  app.io.route('refreshfb-route', function(req) {
-    GetRecentfbposts(req);
-  });
-  app.io.route('refreshfb-route', function(req) {
-    GetRecentfbposts(req);
-  });
   //---SEARCH ROUTE---//
   app.io.route('search-route', function(req) {
     SearchText(req);
+  });
+
+}
+
+//////////////////////////////
+//-------FACEBOOK FEED-------//
+//////////////////////////////
+// 
+function startFacebookAnalytics(){
+  
+  var facebookKeywords = "";
+  for (var i = 0; i < config.keywords.length; i++){
+    facebookKeywords += config.keywords[i]+" ";
+  }
+    // console.log("facebookKeyword : "+facebookKeyword);
+    var facebookUrl = config.facebookURL.facebook+'&access_token='+config.facebookCredentials.access_token+'&q='+facebookKeywords;
+    var facebookItems = [];
+    var intervalCount = 0;
+
+    https.get(facebookUrl, function (res) {
+      var body = "";
+
+      res.on('data', function (chunk) {
+        body += chunk;
+      });
+
+      res.on('end', function () {
+      // Got all response, now parsing...
+
+      if (!body || res.statusCode !== 200){
+        return console.error(err);
+      }
+        //return callback({message: "Invalid Feed"});
+
+        var json = JSON.parse(body);
+
+        json.data.filter(function (post){
+          if(post.type == "status"){
+
+        // search the facebook text to see if it matches any of the keywords
+        var text = post.message.toLowerCase();
+        var keywords = [];
+
+        for (var i = 0; i < config.keywords.length; i++){
+          if (text.search(config.keywords[i]) != -1){
+            keywords.push(config.keywords[i]);
+            }
+        }
+
+            var fbPosting = new Document({
+              id: post.id,
+              created_at: post.created_time,
+              user: [{
+                id: post.from.id,
+                name: post.from.name,
+                screen_name: null,
+                location: null
+              }],
+              title: null,
+              text: post.message,
+              link: null,
+              source: "facebook",
+              keywords: keywords,
+              polarity: null,
+            });
+
+            // fbPosting.save(function(err,facebook){
+            //   if(err)return console.log(err);
+            //   else
+            //     console.log("parsed Facebook success");
+            // });
+
+            // Push the tweet into an array that will be processed for sentiment analysis
+            facebookItems.push(fbPosting);
+            intervalCount++;
+
+            // console.log(fbPosting);
+          }
+
+        });
+
+        //--Verify end of function statement--
+        if(facebookItems.length == 0)
+          console.log("No facebook items added!");
+      });
+    });
+  
+
+  // Set Loop intervals even if there is no client
+  setInterval(function(){
+    AnalyzeFacebookSentiment(facebookItems);
+    facebookItems = [];
+  }, 5000);
+
+  ///////////////////////////////////////////////////////
+  // Fill the client's dashboard with info when called //
+  ///////////////////////////////////////////////////////
+  // Set Loop intervals only when a client calls for it
+  //---READY ROUTE---//
+  // app.io.route('ready', function(req) {
+  //   intervalCount = 0;
+
+  //   GetTweetsPerInterval(req, intervalCount);
+  //   GetTotalTweets(req);
+  //   GetRecentTweets(req);
+  //   GetKeywordPercentages(req);
+  //   GetSentimentAnalytics(req);
+  //   //GetFacebook();
+
+  //   setInterval(function(){
+  //     GetTweetsPerInterval(req, intervalCount);
+  //     intervalCount = 0;
+  //     GetTotalTweets(req);
+  //     GetKeywordPercentages(req);
+  //     GetSentimentAnalytics(req);
+  //   }, 2500);
+  // });
+
+  //---REFRESH ROUTE---//
+  app.io.route('refreshfb-route', function(req) {
+    GetRecentfbposts(req);
   });
 
 }
@@ -196,9 +309,8 @@ function AnalyzeSentiment(tweets){
                 title: null,
                 text: body.data[i].text,
                 link: null,
-                source: "Twitter",
-                keywords: body.data[i].keywords,
                 source: "twitter",
+                keywords: body.data[i].keywords,
                 polarity: body.data[i].polarity
             });
 
@@ -518,81 +630,48 @@ function GetLaTimes(req){
   });
 }
 
-// Get facebook public status update posts and save them to db
-function GetFacebook(){
-  var facebookKeyword = "";
-    for (var i = 0; i < config.keywords.length; i++){
-      facebookKeyword += config.keywords[i]+" ";
-    }
-    // console.log("facebookKeyword : "+facebookKeyword);
-  var facebookUrl = config.facebookURL.facebook+'&access_token='+config.facebookCredentials.access_token+'&q='+facebookKeyword;
-  var facebookItems = [];
-
-  https.get(facebookUrl, function (res) {
-    var body = "";
-
-    res.on('data', function (chunk) {
-      body += chunk;
-    });
-
-    res.on('end', function () {
-      // Got all response, now parsing...
-
-      if (!body || res.statusCode !== 200){
-        return console.error(err);
-      }
-        //return callback({message: "Invalid Feed"});
-
-        var json = JSON.parse(body);
-        // var key, count = 0;
-        // for(key in json.data) {
-        //   if(json.data.hasOwnProperty(key)) {
-        //     count++;
-        //   }
-        // }
-        // console.log("json length : "+count);
-
-
-        json.data.filter(function (post){
-          if(post.type == "status"){
-
-            var fbPosting = new Document({
-              id: post.id,
-              created_at: post.created_time,
-              user: [{
-                id: post.from.id,
-                name: post.from.name,
-                screen_name: null,
-                location: null
-              }],
-              title: null,
-              text: post.message,
-              link: null,
-              source: "facebook",
-              keywords: null,
-              polarity: null,
+// Analyze sentiment for facebook public status update posts and save posts to db
+function AnalyzeFacebookSentiment(facebookItems){
+  var objFbPosts = {data: facebookItems};
+  if (facebookItems.length > 0){
+    // Use HTTP Post to send a batch of facebookItems set as a JSON object
+    needle.post('http://www.sentiment140.com/api/bulkClassifyJson?appid=manuely@uci.edu', JSON.stringify(objFbPosts),
+    function(err, resp, body){
+        if (!err) {
+          //when response is given, create a new mongoose document for each tweet
+          for (var i = 0; i < body.data.length; i++){
+            var FbPosting = new Document({
+                id: body.data[i].id,
+                created_at: body.data[i].created_at,
+                user: [{
+                  id: body.data[i].user[0].id,
+                  name: body.data[i].user[0].name,
+                  screen_name: null,
+                  location: null
+                }],
+                title: null,
+                text: body.data[i].text,
+                link: null,
+                source: "facebook",
+                keywords: body.data[i].keywords,
+                polarity: body.data[i].polarity
             });
+            
+            // console.log(FbPosting);
 
-            fbPosting.save(function(err,facebook){
-              if(err)return console.log(err);
+            // After tweet is saved, send to the client feed
+            FbPosting.save(function (err, facebook) {
+              if (err) return console.log(err);
               else
-                console.log("parsed Facebook success");
+                console.log("Facebook sentiment success");
             });
-
-            // facebookItems.push(fbPosting);
-
-            // console.log(fbPosting);
           }
-
-        });
-
-        //--Verify end of function statement--
-        // if(facebookItems.length == 0)
-        //   console.log("No facebook items added!");
-
-      });
-
-});
+        }
+        else{
+          console.log(err);
+        }
+    });
+  }
 }
 
   // Grab recent facebook posts from db and send them to the feed
