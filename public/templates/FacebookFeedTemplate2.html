@@ -4,7 +4,7 @@
  	<li class="fbpost" ng-repeat="json in facebookfeed | reverse" ng-class="{'positive': json.polarity == 4, 'negative': json.polarity == 0}">
 		<h1>{{json.created_at}}</h1>
 <!-- 		<img ng-src="{'/images/positive-sm_color.png': json.polarity == 4, '/images/negative-sm_color.png': json.polarity == 0}" />
- --> 		<span ng-repeat="keyword in json.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'label': keyword == 'patients'}">{{keyword}}</span>
+ --> 		<span ng-repeat="keyword in json.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'violet label': keyword == 'victim', 'label': keyword == 'patients'}">{{keyword}}</span>
 			<p>{{json.text}}</p>
 		<p class='t_user'>{{json.user[0].name}}</p>
 

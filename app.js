@@ -393,6 +393,10 @@ function SearchText(req){
     });
   });
 }
+
+//////////////////////////////////////////////
+//-------RSS FEED -- HELPER FUNCTIONS-------//
+/////////////////////////////////////////////
 // Parse the inputted RSS data
 function ParseRSS(rss) {
   try {
@@ -505,18 +509,52 @@ function GetOCRegister(req){
                 polarity: null,
             });
 
-
-            // After RSS posting is saved, send to the client feed
-            rssDoc.save(function (err, feed) {
-              if (err) return console.log(err);
-            });
+            //Push to array to be analyzed for sentiment
+            rssMedia.push(rssDoc);
           }
           // else{
           //     console.log("no OC register match");
           // }
         }
       }
-        
+
+      var objRSSMedia = {data: rssMedia};
+      if (rssMedia.length > 0){
+        // Use HTTP Post to send a batch of tweets set as a JSON object
+        needle.post('http://www.sentiment140.com/api/bulkClassifyJson?appid=manuely@uci.edu', JSON.stringify(objRSSMedia),
+        function(err, resp, body){
+            if (!err) {
+              //when response is given, create a new mongoose document for each tweet
+              for (var i = 0; i < body.data.length; i++){
+                var rssDoc = new Document({
+                    id: body.data[i].id,
+                    created_at: body.data[i].created_at,
+                    user: [{
+                      id: null,
+                      name: null,
+                      screen_name: null,
+                      location: null
+                    }],
+                    title: body.data[i].title,
+                    text: body.data[i].text,
+                    link: body.data[i].link,
+                    source: "RSS",
+                    keywords: body.data[i].keywords,
+                    polarity: body.data[i].polarity
+                });
+
+                // After tweet is saved, send to the client feed
+                rssDoc.save(function (err, feed) {
+                  if (err) return console.log(err);
+                });
+
+              }
+            }
+            else{
+              console.log(err);
+            }
+        });
+      }
 
       //Send message to client
       req.io.emit('rss-route', {
@@ -586,16 +624,51 @@ function GetLaTimes(req){
                   polarity: null,
               });
           
-
-              // After RSS posting is saved, send to the client feed
-              rssDoc.save(function (err, feed) {
-                if (err) return console.log(err);
-              });
+              //Push to array to be analyzed for sentiment
+              rssMedia.push(rssDoc);
             }
             // else{
             //       console.log("no LA Times match");
             // }
           }
+      }
+
+      var objRSSMedia = {data: rssMedia};
+      if (rssMedia.length > 0){
+        // Use HTTP Post to send a batch of tweets set as a JSON object
+        needle.post('http://www.sentiment140.com/api/bulkClassifyJson?appid=manuely@uci.edu', JSON.stringify(objRSSMedia),
+        function(err, resp, body){
+            if (!err) {
+              //when response is given, create a new mongoose document for each tweet
+              for (var i = 0; i < body.data.length; i++){
+                var rssDoc = new Document({
+                    id: body.data[i].id,
+                    created_at: body.data[i].created_at,
+                    user: [{
+                      id: null,
+                      name: null,
+                      screen_name: null,
+                      location: null
+                    }],
+                    title: body.data[i].title,
+                    text: body.data[i].text,
+                    link: body.data[i].link,
+                    source: "RSS",
+                    keywords: body.data[i].keywords,
+                    polarity: body.data[i].polarity
+                });
+
+                // After tweet is saved, send to the client feed
+                rssDoc.save(function (err, feed) {
+                  if (err) return console.log(err);
+                });
+
+              }
+            }
+            else{
+              console.log(err);
+            }
+        });
       }
     
 
@@ -607,6 +680,19 @@ function GetLaTimes(req){
     });
   }).on('error', function (error) {
     console.log("error while getting feed", error);
+  });
+}
+
+
+
+// Grab recent RSS postings and send them to the feed
+function GetRecentRSS(req){
+  var query = Document.find({source: "RSS"}).sort({created_at: -1}).limit(35);
+  query.exec(function(err, recentRSS) {
+    if (err) console.log(err);
+    req.io.emit('rssPosting-route', {
+      recentRSS: recentRSS
+    });
   });
 }
 
@@ -665,17 +751,6 @@ function AnalyzeFacebookSentiment(facebookItems){
       });
     });
   }
-
-// Grab recent RSS postings and send them to the feed
-function GetRecentRSS(req){
-  var query = Document.find({source: "RSS"}).sort({created_at: -1}).limit(35);
-  query.exec(function(err, recentRSS) {
-    if (err) console.log(err);
-    req.io.emit('rssPosting-route', {
-      recentRSS: recentRSS
-    });
-  });
-}
 
 // Get facebook public status update posts and save them to db
 function GetFacebook(){
