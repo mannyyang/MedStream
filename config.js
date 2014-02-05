@@ -1,5 +1,5 @@
 //--- Keywords ---//
-exports.keywords = [ 'doctor', 'patients', 'hospital' ];
+exports.keywords = [ 'doctor', 'patients', 'hospital' , 'victim'];
 
 //--- RSS Feed URLS ---//
 exports.rssURLS = {
