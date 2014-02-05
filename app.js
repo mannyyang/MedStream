@@ -476,61 +476,90 @@ function GetOCRegister(req){
       });
 
       for (var i = 0; i < items.length; i++) {
-        // for(var i = 0; i < config.keywords.length - 1; i++){
-        //   var titleText = feed.items[i].title;
-        //   if (titleText.search(config.keywords[i]) != -1){
-        //     //keywords.push(config.keywords[i]);
-        //     console.log("What" + titleText);
-        //   }
+        for(var j = 0; j < config.keywords.length - 1; j++){
+          var titleText = feed.items[i].title;
+          if (titleText.indexOf(config.keywords[j]) != -1){
+            console.log("none found");
+          }
+          else{
+              var rssPosting = {
+                id: feed.items[i].guid._,
+                created_at: feed.items[i].date,
+                user: [{
+                  id: null,
+                  name: null,
+                  screen_name: null,
+                  location: null
+                }],
+                title: feed.items[i].title,
+                text: feed.items[i].description,
+                link: feed.items[i].link,
+                source: "RSS",
+                keywords: null,
+                polarity: null,
+              };
 
-        var rssPosting = {
-            id: feed.items[i].guid._,
-            created_at: feed.items[i].date,
-            user: [{
-              id: null,
-              name: null,
-              screen_name: null,
-              location: null
-            }],
-            title: feed.items[i].title,
-            text: feed.items[i].description,
-            link: feed.items[i].link,
-            source: "RSS",
-            keywords: null,
-            polarity: null,
-          };
-
-          rssMedia.push(rssPosting);
-          
-          //console.log(rssPosting);
+              rssMedia.push(rssPosting);
+              
         }
+
+        // var rssPosting = {
+        //     id: feed.items[i].guid._,
+        //     created_at: feed.items[i].date,
+        //     user: [{
+        //       id: null,
+        //       name: null,
+        //       screen_name: null,
+        //       location: null
+        //     }],
+        //     title: feed.items[i].title,
+        //     text: feed.items[i].description,
+        //     link: feed.items[i].link,
+        //     source: "RSS",
+        //     keywords: null,
+        //     polarity: null,
+        //   };
+
+        //  rssMedia.push(rssPosting);
+          
+        //  console.log(rssPosting);
+        }
+      }
       
 
 
         for (var i = 0; i < items.length; i++){
+          for(var j = 0; j < config.keywords.length - 1; j++){
+            var titleText = feed.items[i].title;
+            if (titleText.indexOf(config.keywords[j]) != -1){
+              console.log("none found");
+            }
+          else{
 
-          var rssDoc = new Document({
-              id: feed.items[i].guid._,
-              created_at: feed.pubDate,
-              user: [{
-                id: null,
-                name: null,
-                screen_name: null,
-                location: null
-              }],
-              title: feed.items[i].title,
-              text: feed.items[i].description,
-              link: feed.items[i].link,
-              source: "RSS",
-              keywords: null,
-              polarity: null,
-          });
+            var rssDoc = new Document({
+                id: feed.items[i].guid._,
+                created_at: feed.pubDate,
+                user: [{
+                  id: null,
+                  name: null,
+                  screen_name: null,
+                  location: null
+                }],
+                title: feed.items[i].title,
+                text: feed.items[i].description,
+                link: feed.items[i].link,
+                source: "RSS",
+                keywords: null,
+                polarity: null,
+            });
 
-          // After RSS posting is saved, send to the client feed
-          rssDoc.save(function (err, feed) {
-            if (err) return console.log(err);
-          });
+            // After RSS posting is saved, send to the client feed
+            rssDoc.save(function (err, feed) {
+              if (err) return console.log(err);
+            });
+          }
         }
+      }
         
 
       //Send message to client
@@ -572,30 +601,13 @@ function GetLaTimes(req){
       });
 
       for (var i = 0; i < items.length; i++) {
-
-      var rssPosting = {
-          id: feed.items[i].guid._,
-          created_at: feed.pubDate,
-          user: [{
-            id: null,
-            name: null,
-            screen_name: null,
-            location: null
-          }],
-          title: feed.items[i].title,
-          text: feed.items[i].description,
-          link: feed.items[i].link,
-          source: "RSS",
-          keywords: null,
-          polarity: null,
-          };
-
-        rssMedia.push(rssPosting);
-        
-        //console.log(rssPosting);
-      }
-      for (var i = 0; i < items.length; i++){
-          var rssDoc = new Document({
+        for(var j = 0; j < config.keywords.length - 1; j++){
+          var titleText = feed.items[i].title;
+            if (titleText.indexOf(config.keywords[j]) != -1){
+              console.log("none found");
+            }
+            else{
+              var rssPosting = {
               id: feed.items[i].guid._,
               created_at: feed.pubDate,
               user: [{
@@ -606,11 +618,44 @@ function GetLaTimes(req){
               }],
               title: feed.items[i].title,
               text: feed.items[i].description,
+              //text: feed.items[i].description,
               link: feed.items[i].link,
               source: "RSS",
               keywords: null,
               polarity: null,
-          });
+              };
+
+            rssMedia.push(rssPosting);
+            
+            //console.log(rssPosting);
+          }
+        }
+      }
+      for (var i = 0; i < items.length; i++){
+        for(var j = 0; j < config.keywords.length - 1; j++){
+          var titleText = feed.items[i].title;
+            if (titleText.indexOf(config.keywords[j]) != -1){
+              console.log("none found");
+            }
+            else{
+              var rssDoc = new Document({
+                  id: feed.items[i].guid._,
+                  created_at: feed.pubDate,
+                  user: [{
+                    id: null,
+                    name: null,
+                    screen_name: null,
+                    location: null
+                  }],
+                  title: feed.items[i].title,
+                  text: feed.items[i].description,
+                  link: feed.items[i].link,
+                  source: "RSS",
+                  keywords: null,
+                  polarity: null,
+              });
+            }
+          }
 
           // After RSS posting is saved, send to the client feed
           rssDoc.save(function (err, feed) {
