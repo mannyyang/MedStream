@@ -485,11 +485,13 @@ function GetOCRegister(req){
 
           //Search OC Register postings titles for matches in keywords, only save those postings
           var titleText = feed.items[i].title;
-          var temp = titleText.toLowerCase();
+          var descriptionText = feed.items[i].description;
+          var titleTextLower = titleText.toLowerCase();
+          var descriptionTextLower = descriptionText.toLowerCase();
           //console.log("OC Register: " + temp);
           var keywords = [];
 
-          if (temp.search(config.keywords[j]) != -1){
+          if (titleTextLower.search(config.keywords[j]) != -1 || descriptionTextLower.search(config.keywords[j]) != -1){
             keywords.push(config.keywords[j]);
 
             var rssDoc = new Document({
@@ -600,11 +602,13 @@ function GetLaTimes(req){
 
             //Search titles of LA Times Postings for matches in keywords, only save postings that match
             var titleText = feed.items[i].title;
-            var temp = titleText.toLowerCase();
+            var descriptionText = feed.items[i].description;
+            var titleTextLower = titleText.toLowerCase();
+            var descriptionTextLower = descriptionText.toLowerCase();
             // console.log("LA Times Title: " + temp);
             var keywords = [];
 
-            if (temp.search(config.keywords[j]) != -1){
+            if (titleTextLower.search(config.keywords[j]) != -1 || descriptionTextLower.search(config.keywords[j]) != -1){
               keywords.push(config.keywords[j]);
 
               var rssDoc = new Document({
