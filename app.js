@@ -136,18 +136,22 @@ function startTwitterAnalytics(twit){
     intervalCount = 0;
     
     GetTweetsPerInterval(req, intervalCount);
-    GetTotalTweets(req);
+    //GetTotalTweets(req);
+    GetTotals(req);
     GetRecentTweets(req);
     GetKeywordPercentages(req);
     GetSentimentAnalytics(req);
     //GetFacebook();
+    //GetTotalRSS(req);
 
     setInterval(function(){
       GetTweetsPerInterval(req, intervalCount);
       intervalCount = 0;
-      GetTotalTweets(req);
+      //GetTotalTweets(req);
+      GetTotals(req);
       GetKeywordPercentages(req);
       GetSentimentAnalytics(req);
+      //GetTotalRSS(req);
     }, 2500);
   });
 
@@ -345,25 +349,62 @@ function GetTweetsPerInterval(req, intervalCount){
     todaysTime: newDate.timeNow()
   });
 }
+
 // Get the total number of tweets of the entire database and the tweets just for today
 var totalTweets = 0;
 var todaysTweets = 0;
-function GetTotalTweets(req){
-  Document.count(function(err, count) {
+var totalRSS = 0;
+var todaysRSS = 0;
+var totalFacebook = 0;
+var todaysFacebook = 0; 
+function GetTotals(req){
+
+  //TOTALS FOR TWITTER
+  Document.count({source:"twitter"}, function(err, count) {
     if (err) return console.error(err);
     totalTweets = count;
   });
 
   var date = new Date();
   date.setHours(0); date.setMinutes(0); date.setSeconds(0);
-  Document.count({created_at: {$gte: date, $lt: new Date()} }, function(err, count) {
+  Document.count({created_at: {$gte: date, $lt: new Date()}, source:"twitter"}, function(err, count) {
     if (err) return console.error(err);
     todaysTweets = count;
   });
 
-  req.io.emit('total-tweets-route', {
+  //TOTALS FOR RSS
+  Document.count({source:"RSS"}, function(err, count) {
+    if (err) return console.error(err);
+    totalRSS = count;
+  });
+
+  var date = new Date();
+  date.setHours(0); date.setMinutes(0); date.setSeconds(0);
+  Document.count({created_at: {$gte: date, $lt: new Date()}, source:"RSS"}, function(err, count) {
+    if (err) return console.error(err);
+    todaysRSS = count;
+  });
+
+    //TOTALS FOR RSS
+  Document.count({source:"facebook"}, function(err, count) {
+    if (err) return console.error(err);
+    totalFacebook = count;
+  });
+
+  var date = new Date();
+  date.setHours(0); date.setMinutes(0); date.setSeconds(0);
+  Document.count({created_at: {$gte: date, $lt: new Date()} , source:"facebook"}, function(err, count) {
+    if (err) return console.error(err);
+    todaysFacebook = count;
+  });
+
+  req.io.emit('totals-route', {
     totalTweets: totalTweets,
-    todaysTweets: todaysTweets
+    todaysTweets: todaysTweets,
+    totalRSS: totalRSS,
+    todaysRSS: todaysRSS,
+    totalFacebook: totalFacebook,
+    todaysFacebook: todaysFacebook
   });
 }
 // Get the percentages of each keyword that is shown in a tweet.

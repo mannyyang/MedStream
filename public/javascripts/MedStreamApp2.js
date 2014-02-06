@@ -7,11 +7,8 @@ var MedStreamApp = angular.module('MedStream', [])
   socket.emit('ready');
   socket.emit('refresh');
   socket.emit('rss-route');
-  socket.emit('rssPosting-route');
-
-  
+  socket.emit('rssPosting-route');  
   return socket;
-
 })
 
 .factory('KeywordChartFactory', function(){
@@ -104,22 +101,6 @@ return chart;
 });
 
 //---- RSSFEED CONTROLLER -----//
-// MedStreamApp.controller('RSSFeedController', function RSSFeedController($scope, SocketFactory) {
-//   //instantiate variables
-//   $scope.rssfeed = [];
-
-//   // When socket receives rss, add to the recent rss array
-//   SocketFactory.on('rss-route', function(data){
-//     if ($scope.rssfeed.length > 30)
-//     {
-//       $scope.rssfeed.shift();
-//     }
-//     $scope.rssfeed.push(data.rssmessage);
-//     $scope.$apply();
-//   });
-// });
-
-//---- RSSFEED CONTROLLER -----//
 MedStreamApp.controller('RSSPostingController', function RSSPostingController($scope, SocketFactory) {
   //instantiate variables
   $scope.rssPostingFeed = [];
@@ -133,6 +114,47 @@ MedStreamApp.controller('RSSPostingController', function RSSPostingController($s
     $scope.rssPostingFeed = data.recentRSS;
     $scope.$apply();
   });
+});
+
+// //---- TOTAL RSS CONTROLLER -----//
+// MedStreamApp.controller('TotalRSSController', function TotalRSSController($scope, SocketFactory) {
+//   //instantiate variables
+//   $scope.totalRSS = 0;
+//   $scope.todaysRSS = 0;
+
+//   // When socket receives tweet, add to the recent tweet array
+//   SocketFactory.on('total-rss-route', function(data){
+//     $scope.totalRSS = data.totalRSS;
+//     $scope.todaysRSS = data.todaysRSS;
+//     $scope.$apply();
+//   });
+
+// });
+
+//---- TOTALS CONTROLLER -----//
+MedStreamApp.controller('TotalsController', function TotalsController($scope, SocketFactory) {
+  //instantiate variables
+  $scope.totalTweets = 0;
+  $scope.todaysTweets = 0;
+  $scope.totalRSS = 0;
+  $scope.todaysRSS = 0;
+  $scope.totalFacebook = 0;
+  $scope.todaysFacebook = 0;
+
+  // When socket receives tweet, add to the recent tweet array
+  SocketFactory.on('totals-route', function(data){
+    $scope.totalTweets = data.totalTweets;
+    $scope.todaysTweets = data.todaysTweets;
+
+    $scope.totalRSS = data.totalRSS;
+    $scope.todaysRSS = data.todaysRSS;
+
+    $scope.totalFacebook = data.totalFacebook;
+    $scope.todaysFacebook = data.todaysFacebook;
+
+    $scope.$apply();
+  });
+
 });
 
 //---- FEED CONTROLLER -----//
@@ -169,19 +191,19 @@ MedStreamApp.controller('FacebookFeedController', function FacebookFeedControlle
 });
 
 //---- TOTAL TWEETS CONTROLLER -----//
-MedStreamApp.controller('TotalTweetsController', function TotalTweetsController($scope, SocketFactory) {
-  //instantiate variables
-  $scope.totalTweets = 0;
-  $scope.todaysTweets = 0;
+// MedStreamApp.controller('TotalTweetsController', function TotalTweetsController($scope, SocketFactory) {
+//   //instantiate variables
+//   $scope.totalTweets = 0;
+//   $scope.todaysTweets = 0;
 
-  // When socket receives tweet, add to the recent tweet array
-  SocketFactory.on('total-tweets-route', function(data){
-    $scope.totalTweets = data.totalTweets;
-    $scope.todaysTweets = data.todaysTweets;
-    $scope.$apply();
-  });
+//   // When socket receives tweet, add to the recent tweet array
+//   SocketFactory.on('total-tweets-route', function(data){
+//     $scope.totalTweets = data.totalTweets;
+//     $scope.todaysTweets = data.todaysTweets;
+//     $scope.$apply();
+//   });
 
-});
+// });
 
 //---- KEYWORD CHART CONTROLLER -----//
 MedStreamApp.controller('KeywordChartController', function KeywordChartController($scope, SocketFactory, KeywordChartFactory) {

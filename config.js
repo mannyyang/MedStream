@@ -27,4 +27,4 @@ exports.twitterCredentials = {
 
 //--- RSS Feed ---//
 exports.cacheTime = 60 * 60 * 1000; // 1 hour in milliseconds
-exports.maxItems = 20; //currently 9 works for OC Register, issue with empty titles (throws error)
+exports.maxItems = 50; 
