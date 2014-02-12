@@ -139,6 +139,8 @@ function startTwitterAnalytics(twit){
     //GetTotalTweets(req);
     GetTotals(req);
     GetRecentTweets(req);
+    GetRecentRSS(req);
+    GetRecentfbposts(req);
     GetKeywordPercentages(req);
     GetSentimentAnalytics(req);
     //GetFacebook();
@@ -159,6 +161,7 @@ function startTwitterAnalytics(twit){
   app.io.route('refresh-route', function(req) {
     GetRecentTweets(req);
     GetRecentRSS(req);
+    GetRecentfbposts(req);
   });
   //---SEARCH ROUTE---//
   app.io.route('search-route', function(req) {
@@ -211,7 +214,9 @@ function startFacebookAnalytics(){
             keywords.push(config.keywords[i]);
             }
         }
-
+            var message = new String(post.message);
+            var shortened = message.substring(0,140);
+            // console.log("shortened: "+shortened);
             var fbPosting = new Document({
               id: post.id,
               created_at: post.created_time,
@@ -221,19 +226,13 @@ function startFacebookAnalytics(){
                 screen_name: null,
                 location: null
               }],
-              title: null,
+              title: shortened,
               text: post.message,
               link: null,
               source: "facebook",
               keywords: keywords,
               polarity: null,
             });
-
-            // fbPosting.save(function(err,facebook){
-            //   if(err)return console.log(err);
-            //   else
-            //     console.log("parsed Facebook success");
-            // });
 
             // Push the tweet into an array that will be processed for sentiment analysis
             facebookItems.push(fbPosting);
@@ -256,35 +255,6 @@ function startFacebookAnalytics(){
     AnalyzeFacebookSentiment(facebookItems);
     facebookItems = [];
   }, 5000);
-
-  ///////////////////////////////////////////////////////
-  // Fill the client's dashboard with info when called //
-  ///////////////////////////////////////////////////////
-  // Set Loop intervals only when a client calls for it
-  //---READY ROUTE---//
-  // app.io.route('ready', function(req) {
-  //   intervalCount = 0;
-
-  //   GetTweetsPerInterval(req, intervalCount);
-  //   GetTotalTweets(req);
-  //   GetRecentTweets(req);
-  //   GetKeywordPercentages(req);
-  //   GetSentimentAnalytics(req);
-  //   //GetFacebook();
-
-  //   setInterval(function(){
-  //     GetTweetsPerInterval(req, intervalCount);
-  //     intervalCount = 0;
-  //     GetTotalTweets(req);
-  //     GetKeywordPercentages(req);
-  //     GetSentimentAnalytics(req);
-  //   }, 2500);
-  // });
-
-  //---REFRESH ROUTE---//
-  app.io.route('refreshfb-route', function(req) {
-    GetRecentfbposts(req);
-  });
 
 }
 
@@ -760,14 +730,14 @@ function AnalyzeFacebookSentiment(facebookItems){
                   screen_name: null,
                   location: null
                 }],
-                title: null,
+                title: body.data[i].title,
                 text: body.data[i].text,
                 link: null,
                 source: "facebook",
                 keywords: body.data[i].keywords,
                 polarity: body.data[i].polarity
             });
-            
+            // console.log("shortened after sentiment: "+body.data[i].title);
             // console.log(FbPosting);
 
             // After tweet is saved, send to the client feed

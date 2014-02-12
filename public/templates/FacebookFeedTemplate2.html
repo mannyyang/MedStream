@@ -1,3 +1,5 @@
+
+
 <ul id='current_bfposts' class='medstream'>
 
 
@@ -5,7 +7,12 @@
 		<h1>{{json.created_at}}</h1>
 <!-- 		<img ng-src="{'/images/positive-sm_color.png': json.polarity == 4, '/images/negative-sm_color.png': json.polarity == 0}" />
  --> 		<span ng-repeat="keyword in json.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'violet label': keyword == 'victim', 'label': keyword == 'patients'}">{{keyword}}</span>
-			<p>{{json.text}}</p>
+			<div ng-app>
+				<p ng-hide="display">{{json.title}}...</p>
+				<p ng-show="display">{{json.text}}</p>
+				<a ng-hide="display" ng-click="display = !display">Show more</a>
+				<a ng-show="display" ng-click="display = !display">Show less</a>
+			</div>
 		<p class='t_user'>{{json.user[0].name}}</p>
 
 	</li>
