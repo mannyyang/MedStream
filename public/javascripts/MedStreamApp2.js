@@ -178,7 +178,7 @@ MedStreamApp.controller('FacebookFeedController', function FacebookFeedControlle
   //instantiate variables
   $scope.facebookfeed = [];
 
-  $('#refreshfb-button').click(function(){
+  $('#refresh-button').click(function(){
     SocketFactory.emit('refreshfb-route');
   });
 
