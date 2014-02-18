@@ -1,7 +1,0 @@
-
-<ul id='current_rss' class='medstream'>
-	<li class="rssPosting" ng-repeat="rssPosting in rssPostingFeed | reverse" ng-class="{'positive': rssPosting.polarity == 4, 'negative': rssPosting.polarity == 0}">
-		<a href="{{rssPosting.link}}"> <h1>"{{rssPosting.title}}"</h1></a>
-		<span ng-repeat="keyword in rssPosting.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'grey label': keyword == 'victim', 'label': keyword == 'patients'}">{{keyword}}</span>
-	</li>
-<ul>
