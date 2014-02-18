@@ -1,10 +1,10 @@
 'use strict';
 
 var express = require('express'),
-    path = require('path'),
-    fs = require('fs'),
-    mongoose = require('mongoose');
-var terminal = require('child_process').spawn;
+	path = require('path'),
+	fs = require('fs'),
+	mongoose = require('mongoose');
+
 /**
  * Main application file
  */
@@ -22,7 +22,7 @@ var db = mongoose.connect(config.mongo.uri, config.mongo.options);
 var modelsPath = path.join(__dirname, 'lib/models');
 fs.readdirSync(modelsPath).forEach(function (file) {
   if (/(.*)\.(js$|coffee$)/.test(file)) {
-    require(modelsPath + '/' + file);
+	require(modelsPath + '/' + file);
   }
 });
 
