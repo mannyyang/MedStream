@@ -1,0 +1,11 @@
+
+<ul id='current_media' class='medstream'>
+	<li class="currentMedia" ng-repeat="currentMedia in allMediaFeed | reverse" ng-class="{'positive': currentMedia.polarity == 4, 'negative': currentMedia.polarity == 0}">
+		<h1>{{currentMedia.source}}</h1>
+		<h1>{{currentMedia.created_at}}</h1>
+		<a href="{{currentMedia.link}}"> <h1>"{{currentMedia.title}}"</h1></a>
+		<p>{{currentMedia.text}}</p>
+		<p>{{currentMedia.description}}
+		<span ng-repeat="keyword in currentMedia.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'grey label': keyword == 'victim', 'label': keyword == 'patients'}">{{keyword}}</span>
+	</li>
+<ul>

@@ -128,6 +128,12 @@
     
 
       <!-- right column -->
+       <!-- all media  -->
+      <div id="FeedContainer" class="large-4 columns" ng-controller="AllMediaController">
+        <h3 class='medstream'>Real Time Feed</h3>
+        <div class="panel" id='tweet_panel' ng-include="'/templates/AllMediaTemplate.html'"></div>
+      </div>
+
       <!-- current tweets -->
       <div id="FeedContainer" class="large-4 columns" ng-controller="FeedController">
         <h3 class='medstream'>Current Tweets</h3>

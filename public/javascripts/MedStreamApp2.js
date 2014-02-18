@@ -100,6 +100,22 @@ return chart;
   };
 });
 
+//---- ALLMEDIAFEED CONTROLLER -----//
+MedStreamApp.controller('AllMediaController', function AllMediaController($scope, SocketFactory) {
+  //instantiate variables
+  $scope.allMediaFeed = [];
+
+  $('#refresh-button').click(function(){
+    SocketFactory.emit('refresh-route');
+  });
+
+  // When socket receives tweet, add to the recent tweet array
+  SocketFactory.on('media-route', function(data){
+    $scope.allMediaFeed = data.recentMedia;
+    $scope.$apply();
+  });
+});
+
 //---- RSSFEED CONTROLLER -----//
 MedStreamApp.controller('RSSPostingController', function RSSPostingController($scope, SocketFactory) {
   //instantiate variables

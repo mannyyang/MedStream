@@ -141,6 +141,7 @@ function startTwitterAnalytics(twit){
     GetRecentTweets(req);
     GetRecentRSS(req);
     GetRecentfbposts(req);
+    GetRecentMedia(req);
     GetKeywordPercentages(req);
     GetSentimentAnalytics(req);
     //GetFacebook();
@@ -162,6 +163,7 @@ function startTwitterAnalytics(twit){
     GetRecentTweets(req);
     GetRecentRSS(req);
     GetRecentfbposts(req);
+    GetRecentMedia(req);
   });
   //---SEARCH ROUTE---//
   app.io.route('search-route', function(req) {
@@ -852,6 +854,18 @@ function GetFacebook(){
         console.log(err);
       req.io.emit('facebook-route', {
         recentfbposts: recentfbposts
+      });
+    });
+  }
+
+  // Grab recent Media and send them to the feed
+  // Consolidate Feed
+  function GetRecentMedia(req){
+    var query = Document.find();
+    query.exec(function(err, recentMedia) {
+      if (err) console.log(err);
+      req.io.emit('media-route', {
+        recentMedia: recentMedia
       });
     });
   }
