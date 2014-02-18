@@ -26,10 +26,21 @@
 	<tbody>
 		<tr class="search-results" ng-repeat="result in searchresults | reverse" ng-class="{'positive': result.obj.polarity == 4, 'negative': result.obj.polarity == 0}">
 			<td>{{result.obj.user[0].name}}</td>
-			<td>@{{result.obj.user[0].screen_name}}</td>
-			<td>{{result.obj.text}}</td>
+			<td>
+				<div ng-show="result.obj.source != 'facebook'">@{{result.obj.user[0].screen_name}}</div>
+			</td>
+<!-- 		<td>{{result.obj.text}}</td>
+ -->		<td>
+				<div ng-show="result.obj.source != 'facebook'">{{result.obj.text}}</div>
+				<div ng-show="result.obj.source == 'facebook'">
+					<p ng-hide="display">{{result.obj.title}}...</p>
+					<p ng-show="display">{{result.obj.text}}</p>
+					<a ng-hide="display" ng-click="display = !display">Show more</a>
+					<a ng-show="display" ng-click="display = !display">Show less</a>
+				</div>	
+			</td>
 			<td class="text-center">{{result.obj.polarity}}</td>
-			<td><span ng-repeat="keyword in result.obj.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'label': keyword == 'patients'}">{{keyword}}</span></td>
+			<td><span ng-repeat="keyword in result.obj.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'violet label': keyword == 'victim', 'label': keyword == 'patients'}">{{keyword}}</span></td>
 			<td>{{result.obj.user[0].location}}</td>
 			<td>{{result.obj.created_at}}</td>
 		</tr>

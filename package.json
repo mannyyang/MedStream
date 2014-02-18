@@ -14,7 +14,6 @@
     "mongoose-text-search": "*",
     "twit": "*",
     "socket.io": "*",
-    "feed-read": "*",
     "xml2js": "*",
     "needle": "*"
   }
