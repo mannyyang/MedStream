@@ -47,20 +47,12 @@ mongoose.connection.on('error', function (err){
   console.log(err);
 });
 
-<<<<<<< HEAD
-//////////////////////////
-//-------RSS FEED-------//
-//////////////////////////
-
-// Start Parsing the RSS Feed
-=======
 ///////////////////////////////
 //-------INTIALIZE APP-------//
 ///////////////////////////////
 // Set Twitter API key, token, & secret
 var T = new twitter(config.twitterCredentials);
 startTwitterAnalytics(T);
->>>>>>> 3e3770ebc3ff5d10e39300044cd1efd59503a9c8
 startRSSFeedParser();
 startFacebookAnalytics();
 
@@ -82,22 +74,10 @@ function startRSSFeedParser(){
   });
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e3770ebc3ff5d10e39300044cd1efd59503a9c8
 //////////////////////////////
 //-------TWITTER FEED-------//
 //////////////////////////////
 // start up twitter stream as soon as server starts
-<<<<<<< HEAD
-
-// Set Twitter API key, token, & secret
-var T = new twitter(config.twitterCredentials);
-startTwitterAnalytics(T);
-
-=======
->>>>>>> 3e3770ebc3ff5d10e39300044cd1efd59503a9c8
 function startTwitterAnalytics(twit){
 
   // local variables
@@ -421,7 +401,7 @@ function GetKeywordPercentages(req){
 function SearchText(req){
   Document.textSearch(req.data, function (err, output) {
     if (err) return console.log(err);
-    req.io.emit('search-result-route', {
+    req.io.emit('search-route', {
         searchresults: output.results
     });
   });

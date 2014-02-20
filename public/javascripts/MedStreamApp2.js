@@ -262,7 +262,7 @@ MedStreamApp.controller('SearchController', function SearchController($scope, So
 });
 
   // When socket receives tweet, add to the recent tweet array
-  SocketFactory.on('search-result-route', function(data){
+  SocketFactory.on('search-route', function(data){
     $scope.searchresults = data.searchresults;
     $scope.$apply();
   });
