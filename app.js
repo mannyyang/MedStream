@@ -859,16 +859,40 @@ function GetFacebook(){
   }
 
   // Grab recent Media and send them to the feed
-  // Consolidate Feed
   function GetRecentMedia(req){
-    var query = Document.find();
-    query.exec(function(err, recentMedia) {
-      if (err) console.log(err);
+    //get and send recent twitter
+    var query = Document.find({source:"twitter"}).sort({created_at: -1}).limit(35);
+    query.exec(function(err, recent_twitter) {
+      if (err) {
+        console.log(err);
+      }
+
       req.io.emit('media-route', {
-        recentMedia: recentMedia
+        recentMedia: recent_twitter
+      })
+    });
+
+    //get and send recent facebook posts
+    var query = Document.find({source:"facebook"}).sort({created_at: -1}).limit(35);
+    query.exec(function(err, recentfbposts) {
+      if (err) {
+        console.log(err);
+      }
+
+      req.io.emit('media-route', {
+        recentMedia: recentfbposts
       });
     });
-  }
+
+    // get and send recent RSS posts
+    var query = Document.find({source: "RSS"}).sort({created_at: -1}).limit(35);
+    query.exec(function(err, recentRSS) {
+      if (err) console.log(err);
+      req.io.emit('media-route', {
+        recentMedia: recentRSS
+      });
+    });
+}
 
 // Get analytics from sentiment data
 var positive = 0.0;

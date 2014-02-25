@@ -12,6 +12,10 @@ var MedStreamApp = angular.module('MedStream', [])
 })
 
 .factory('KeywordChartFactory', function(){
+  /*
+    ToDo
+    - need to bootstrap this in a way that doesn't require hard coding the series values of 'dcotor', 'patient', etc.
+  */
   var chart = new Highcharts.Chart({
               chart: {
                   renderTo: 'KeywordChart',
@@ -32,7 +36,7 @@ var MedStreamApp = angular.module('MedStream', [])
               plotOptions: {
 
               },
-              colors: ['#575adc','#e35f24', '#2ba8e2'],
+              colors: ['#575adc','#e35f24', '#2ba8e2', '#2ba8e2'],
               series: [{
                     name: 'doctor',
                     id: 'doctor',
@@ -47,6 +51,11 @@ var MedStreamApp = angular.module('MedStream', [])
                     name: 'patients',
                     id: 'patients',
                     data: [25]
+        
+                }, {
+                    name: 'victim',
+                    id: 'victim',
+                    data: [5]
         
                 }
               ]
@@ -105,13 +114,31 @@ MedStreamApp.controller('AllMediaController', function AllMediaController($scope
   //instantiate variables
   $scope.allMediaFeed = [];
 
+  //this should be read in from somewhere...
+  var max_recent_post_count = 140;
+
   $('#refresh-button').click(function(){
     SocketFactory.emit('refresh-route');
   });
 
   // When socket receives tweet, add to the recent tweet array
   SocketFactory.on('media-route', function(data){
-    $scope.allMediaFeed = data.recentMedia;
+    //console.log('data: ' + JSON.stringify(data));
+
+    //$scope.allMediaFeed = data.recentMedia;
+
+    for (var item in data.recentMedia) {
+      $scope.allMediaFeed.push(data.recentMedia[item]);
+
+      console.log('adding something...')
+
+      if ($scope.allMediaFeed.length > max_recent_post_count) {
+        $scope.allMediaFeed.shift();
+        console.log('removing something...');
+      }
+    }
+
+
     $scope.$apply();
   });
 });
@@ -177,7 +204,7 @@ MedStreamApp.controller('TotalsController', function TotalsController($scope, So
 MedStreamApp.controller('FeedController', function FeedController($scope, SocketFactory) {
   //instantiate variables
   $scope.twitterfeed = [];
-
+/*
   $('#refresh-button').click(function(){
     SocketFactory.emit('refresh-route');
   });
@@ -187,6 +214,7 @@ MedStreamApp.controller('FeedController', function FeedController($scope, Socket
     $scope.twitterfeed = data.recentTweets;
     $scope.$apply();
   });
+*/
 });
 
 //---- Facebook FEED CONTROLLER -----//
@@ -225,12 +253,17 @@ MedStreamApp.controller('FacebookFeedController', function FacebookFeedControlle
 MedStreamApp.controller('KeywordChartController', function KeywordChartController($scope, SocketFactory, KeywordChartFactory) {
   // When socket receives tweet, add to the recent tweet array
   SocketFactory.on('keywords-route', function(data){
-    KeywordChartFactory.get('doctor').setData([data.keywordOne]);
-    KeywordChartFactory.get('hospital').setData([data.keywordTwo]);
-    KeywordChartFactory.get('patients').setData([data.keywordThree]);
+
+    for (var i = 0; i < data.keywordList.length; i++){
+      var newData = [];
+
+      newData.push(data.keywordPercentages[data.keywordList[i]]);
+
+      KeywordChartFactory.get(data.keywordList[i]).setData(newData); 
+    }
+
     KeywordChartFactory.redraw();
   });
-
 });
 
 //---- VOLUME TIME CHART CONTROLLER -----//
@@ -242,7 +275,7 @@ MedStreamApp.controller('VolumeTimeChartController', function VolumeTimeChartCon
   });
 });
 
-//---- FEED CONTROLLER -----//
+//---- Search CONTROLLER -----//
 MedStreamApp.controller('SearchController', function SearchController($scope, SocketFactory) {
   //instantiate variables
   $scope.searchresults = [];
