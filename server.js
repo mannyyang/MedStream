@@ -46,19 +46,6 @@ require('./lib/config/express')(app);
 require('./lib/routes')(app, io, config);
 
 
-// var options = {
-//   annotators: ['tokenize', 'ssplit', 'pos', 'lemma', 'ner', 'parse', 'dcoref']
-// };
-
-// var stanfordSimpleNLP = new StanfordSimpleNLP(options, function(err) {
-//   stanfordSimpleNLP.process('This is so good.', function(err, result) {
-//     if
-//     	(err) console.log(err)
-// 	else
-// 		console.log(result);
-//   });
-// });
-
 // Start server
 server.listen(config.port, function () {
   console.log('Express server listening on port %d in %s mode', config.port, app.get('env'));
