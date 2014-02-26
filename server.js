@@ -39,12 +39,17 @@ var server = require('http').createServer(app);
 // Socket.io
 var io = require('socket.io').listen(server);
 
+// start up sentiment child process
+var sentiment = require('./lib/sentiment');
+
 // Express settings
 require('./lib/config/express')(app);
 
+// Background Services (sentiment analysis and social media data input)
+require('./lib/background-services')(config, sentiment);
+
 // Routing
 require('./lib/routes')(app, io, config);
-
 
 // Start server
 server.listen(config.port, function () {
