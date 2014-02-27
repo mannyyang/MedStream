@@ -51,7 +51,7 @@
 
   
   <!-- START MAIN SECTION -->
-  <div role="main">
+  <div role="main" id="main">
 
     <div class="row">
       <div class="large-12 columns">
@@ -92,36 +92,35 @@
 
         <!-- inner columns -->
         <!-- total tweets -->
-        <!-- OG <div id="TotalTweetsContainer" class="large-8 columns" ng-controller="TotalTweetsController"> -->
+        <!-- OG <div id="TotalTweetsContainer" class="large-8 columns" ng-controller="TotalTweetsController"> -->   
+        <h3 class='medstream'>Totals by Keyword</h3>
+        <!-- <div id="KeywordChartContainer" class="large-8 columns" ng-controller="KeywordChartController"> -->
+        <div id="KeywordChartContainer" ng-controller="KeywordChartController">  
+          <div id="KeywordChart"></div>
+        </div>
+
         <div id="TotalTweetsContainer" ng-controller="TotalsController">
           <h3 class='medstream'>Social Media Totals</h3>
-
-          <div class="large-4 columns" id="totals">
-            <div class="total-tweets">
-              <h1>{{totalTweets}}</h1>
-              <h3>tweets in the database</h3>
-              <h1>{{todaysTweets}}</h1>
-              <h3>tweets today</h3>
-
-              <span class='totaltweets_spacer'></span>
-
-              <h1>{{totalRSS}}</h1>
-              <h3>RSS in the database</h3>
-              <h1>{{todaysRSS}}</h1>
-              <h3>RSS today</h3>
-
-              <span class='totaltweets_spacer'></span>
-
-              <h1>{{totalFacebook}}</h1>
-              <h3>Facebook Status' in the database</h3>
-              <h1>{{todaysFacebook}}</h1>
-              <h3>Facebook Status' today</h3>
-            </div>
-          </div>
-            
-          <div id="KeywordChartContainer" class="large-8 columns" ng-controller="KeywordChartController">
-            <div id="KeywordChart"></div>
-          </div>
+          <table id="post_totals">
+            <tr>
+              <th>&nbsp;</th>
+              <th>Twitter</th>
+              <th>Facebook</th>
+              <th>RSS</th>
+            </tr>
+            <tr class="totals_today">
+              <th>Today</th>
+              <td>{{todaysTweets}}</td>
+              <td>{{todaysFacebook}}</td>
+              <td>{{todaysRSS}}</td>
+            </tr>
+            <tr class="totals_overall">
+              <th>Overall</th>
+              <td>{{totalTweets}}</td>
+              <td>{{totalFacebook}}</td>
+              <td>{{totalRSS}}</td>
+            </tr>
+          </table>
         </div>
         
       </div> <!-- end of left column -->
@@ -133,31 +132,6 @@
         <h3 class='medstream'>Recent Posts</h3>
         <div class="panel" id='tweet_panel' ng-include="'/templates/AllMediaTemplate.html'"></div>
       </div>
-
-      <!-- current tweets -->
-      <div id="FeedContainer" class="large-4 columns" ng-controller="FeedController">
-        <!--
-        <h3 class='medstream'>Current Tweets</h3>
-        <div class="panel" id='tweet_panel' ng-include="'/templates/FeedTemplate2.html'"></div>
-        -->
-      </div>
-
-      <!-- current facebook posts -->
-      <div id="FeedContainer" class="large-4 columns" ng-controller="FacebookFeedController">
-        <!--
-        <h3 class='medstream'>Current Facebook Posts</h3>
-        <div class="panel" id='tweet_panel' ng-include="'/templates/FacebookFeedTemplate2.html'"></div>
-        -->
-      </div>
-      <!-- end right column -->
-
-      <!-- RSS -->
-       <div class="row">
-      <div id="FeedContainer" class="large-4 columns" ng-controller="RSSPostingController">
-        <!--
-        <h3 class="medstream">RSS Feed</h3>
-        <div class="panel" id='tweet_panel' ng-include="'/templates/RSSFeedTemplate2.html'"></div>
-        -->
     </div> 
 
     </div>

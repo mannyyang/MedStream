@@ -199,3 +199,29 @@ ul#rss_feed li {
     margin-left: 1em;
     margin-top: 0.25em
 }
+
+
+#post_totals {
+	width: 100%;
+}
+
+.totals_today td {
+    color: #767686;
+    font-size: 26pt;
+    margin: 0;
+    font-weight: bold;
+}
+
+.totals_overall td {
+    color: #767686;
+    font-size: 18pt;
+    margin: 0;
+    font-weight: bold;
+}
+
+
+#main {
+    margin: 0 25px !important;
+    width: 95% !important; 
+    float: none !important;
+}

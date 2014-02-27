@@ -78,7 +78,10 @@ var MedStreamApp = angular.module('MedStream', [])
     legend: {enabled: false},
     credits: {enabled: false},
     xAxis: {
-      type: 'datetime'
+      type: 'datetime',
+      labels: {
+        enabled: false
+      }
     },
     yAxis: {
       plotLines: [{
@@ -129,8 +132,6 @@ MedStreamApp.controller('AllMediaController', function AllMediaController($scope
 
     for (var item in data.recentMedia) {
       $scope.allMediaFeed.push(data.recentMedia[item]);
-
-      console.log('adding something...')
 
       if ($scope.allMediaFeed.length > max_recent_post_count) {
         $scope.allMediaFeed.shift();
@@ -279,17 +280,18 @@ MedStreamApp.controller('VolumeTimeChartController', function VolumeTimeChartCon
 MedStreamApp.controller('SearchController', function SearchController($scope, SocketFactory) {
   //instantiate variables
   $scope.searchresults = [];
+  $scope.searchWord = "";
 
   $('#search-button').click(function(){
-    var searchWord = $('#SearchContainer input').val();
-    SocketFactory.emit('search-route', searchWord);
+    $scope.searchWord = $('#SearchContainer input').val();
+    SocketFactory.emit('search-route', $scope.searchWord);
   });
 
   $(document).keypress(function(e) {
     if(e.which == 13) {
-        var searchWord = $('#SearchContainer input').val();
-        if (searchWord.length > 0) {
-          SocketFactory.emit('search-route', searchWord);
+        $scope.searchWord = $('#SearchContainer input').val();
+        if ($scope.searchWord.length > 0) {
+          SocketFactory.emit('search-route', $scope.searchWord);
         }
     }
 });
