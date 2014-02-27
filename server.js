@@ -1,10 +1,10 @@
 'use strict';
 
 var express = require('express'),
-	path = require('path'),
-	fs = require('fs'),
-	mongoose = require('mongoose');
-
+    path = require('path'),
+    fs = require('fs'),
+    mongoose = require('mongoose');
+var terminal = require('child_process').spawn;
 /**
  * Main application file
  */
@@ -22,7 +22,7 @@ var db = mongoose.connect(config.mongo.uri, config.mongo.options);
 var modelsPath = path.join(__dirname, 'lib/models');
 fs.readdirSync(modelsPath).forEach(function (file) {
   if (/(.*)\.(js$|coffee$)/.test(file)) {
-	require(modelsPath + '/' + file);
+    require(modelsPath + '/' + file);
   }
 });
 
@@ -39,17 +39,25 @@ var server = require('http').createServer(app);
 // Socket.io
 var io = require('socket.io').listen(server);
 
-// start up sentiment child process
-var sentiment = require('./lib/sentiment');
-
 // Express settings
 require('./lib/config/express')(app);
 
-// Background Services (sentiment analysis and social media data input)
-require('./lib/background-services')(config, sentiment);
-
 // Routing
 require('./lib/routes')(app, io, config);
+
+
+// var options = {
+//   annotators: ['tokenize', 'ssplit', 'pos', 'lemma', 'ner', 'parse', 'dcoref']
+// };
+
+// var stanfordSimpleNLP = new StanfordSimpleNLP(options, function(err) {
+//   stanfordSimpleNLP.process('This is so good.', function(err, result) {
+//     if
+//     	(err) console.log(err)
+// 	else
+// 		console.log(result);
+//   });
+// });
 
 // Start server
 server.listen(config.port, function () {
