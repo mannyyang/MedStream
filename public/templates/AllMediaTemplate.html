@@ -2,7 +2,7 @@
 <ul id='current_media' class='medstream'>
 	<li class="currentMedia" ng-repeat="currentMedia in allMediaFeed | reverse" ng-class="{'positive': currentMedia.polarity == 4, 'negative': currentMedia.polarity == 0}">
 		<h1>{{currentMedia.source}}</h1>
-		<p>{{currentMedia.created_at}}</p>
+		<p>{{currentMedia.created_at | date: 'M/d/yyyy  h:mma'}}</p>
 		<div ng-if="currentMedia.link.length <= 0">
 			<a href="{{currentMedia.link}}"> <h1>{{currentMedia.title}}</h1></a>
 		</div>

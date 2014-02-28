@@ -140,7 +140,8 @@ h3.medstream {
 }
 
 #tweet_panel {
-	padding: 0;
+	padding: 0 !important;
+	background-color: #fcfcfc;
 }
 
 ul.medstream {
@@ -148,7 +149,8 @@ ul.medstream {
 }
 
 ul.medstream li {
-	padding: 0 0.25em 0.5em 0.25em;
+    padding: 0.5em 0.75em;
+	border-bottom: 1px solid #CCCCCC;
 }
 
 ul.medstream li h1 {

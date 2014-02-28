@@ -25,7 +25,7 @@ var MedStreamApp = angular.module('MedStream', [])
               legend: {enabled: false},
               credits: {enabled: false},
               xAxis: {
-                  labels: {enabled: false}
+                labels: {enabled: false}
               },
               yAxis: {
                   min: 0,
@@ -78,10 +78,7 @@ var MedStreamApp = angular.module('MedStream', [])
     legend: {enabled: false},
     credits: {enabled: false},
     xAxis: {
-      type: 'datetime',
-      labels: {
-        enabled: false
-      }
+      type: 'category'
     },
     yAxis: {
       plotLines: [{
@@ -99,7 +96,7 @@ var MedStreamApp = angular.module('MedStream', [])
     series: [
       {
         name: 'TweetsPerSec',
-        data: [0, 0, 0,0,0,0,0,0,0,0,0]
+        data: [0,0,0,0,0,0,0,0,0,0]
       }]
 });
 

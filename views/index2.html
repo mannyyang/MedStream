@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width" />
-  <title>MedStream 2</title>
+  <title>MedStream - Current Activity</title>
 
   <link rel="stylesheet" href="/stylesheets/foundation/normalize.css" />
   <link rel="stylesheet" href="/stylesheets/foundation/foundation.css" />
@@ -41,40 +41,9 @@
   </ul>
 </nav>
 
- 
-<!-- 
-<div id='header'>
-  <img src='/images/logo_sm.png'></img>
-  <h1>Current Activity</h1>
-</div>
--->
-
   
   <!-- START MAIN SECTION -->
   <div role="main" id="main">
-
-    <div class="row">
-      <div class="large-12 columns">
-        <a href="#side-nav" id="sidebar-link" class="button radius" role="navigation">sidebar<i class="icon-reorder"></i></a>
-      </div>
-    </div>
-
-    <!-- Main Grid Section -->
-<!--
-    <div class="row">
-      <div class="large-12 columns">
-        <div class="panel">
-          Keywords: Any tweets from the public stream that have the words 
-          <span class="dark-blue label">doctor</span>,
-          <span class="yellow label">hospital</span>, or
-          <span class="label">patients</span>
-        </div>
-      </div>
-    </div>
-  -->
-
-
-
 
     <div id="refresh-button" class="button right">refresh</div>
 
@@ -90,11 +59,8 @@
           <div id="VolumeTimeChart"></div>
         </div>
 
-        <!-- inner columns -->
         <!-- total tweets -->
-        <!-- OG <div id="TotalTweetsContainer" class="large-8 columns" ng-controller="TotalTweetsController"> -->   
         <h3 class='medstream'>Totals by Keyword</h3>
-        <!-- <div id="KeywordChartContainer" class="large-8 columns" ng-controller="KeywordChartController"> -->
         <div id="KeywordChartContainer" ng-controller="KeywordChartController">  
           <div id="KeywordChart"></div>
         </div>
@@ -122,12 +88,13 @@
             </tr>
           </table>
         </div>
-        
-      </div> <!-- end of left column -->
+
+      </div>
+      <!-- end of left column -->
     
 
       <!-- right column -->
-       <!-- all media  -->
+      <!-- all media  -->
       <div id="FeedContainer" class="large-4 columns" ng-controller="AllMediaController">
         <h3 class='medstream'>Recent Posts</h3>
         <div class="panel" id='tweet_panel' ng-include="'/templates/AllMediaTemplate.html'"></div>
@@ -154,6 +121,7 @@
 
 
     <!-- Footer -->
+    <!-- 
     <footer class="row">
       <div class="large-12 columns">
         <hr />
@@ -171,6 +139,7 @@
         </div>
       </div>
     </footer>
+    -->
 
   </div>
     
@@ -180,11 +149,6 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/javascripts/angular/angular.js"></script>
-  <!-- 
-  <script src="/javascripts/flot/jquery.flot.min.js"></script>
-  <script src="/javascripts/flot/jquery.flot.categories.js"></script>
-  <script src="/javascripts/flot/jquery.flot.resize.js"></script>
--->
   <script src="/javascripts/highcharts/3.0.6/js/highcharts.js"></script>
   <script src="/javascripts/MedStreamApp2.js"></script>
   <script>
