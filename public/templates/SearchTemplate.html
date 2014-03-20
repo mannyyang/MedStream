@@ -39,10 +39,12 @@
 						<a ng-show="display" ng-click="display = !display">Show less</a>
 					</div>	
 				</td>
-				<td class="text-center">{{result.obj.polarity}}</td>
+				
+				<td class="text-center"><span ng-bind="{4 : 'positive', 2 : 'neutral',  0 : 'negative'}[result.obj.polarity]"></span></td>
+				
 				<td><span ng-repeat="keyword in result.obj.keywords" ng-class="{'dark-blue label': keyword == 'doctor', 'yellow label': keyword == 'hospital', 'violet label': keyword == 'victim', 'label': keyword == 'patients'}">{{keyword}}</span></td>
 				<td>{{result.obj.user[0].location}}</td>
-				<td>{{result.obj.created_at}}</td>
+				<td>{{result.obj.created_at | date: 'M/d/yyyy  h:mma'}}</td>
 			</tr>
 		</tbody>
 	</table>

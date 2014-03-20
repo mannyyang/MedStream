@@ -42,29 +42,58 @@
 </nav>
 
   
-  <!-- START MAIN SECTION -->
+  <!-- grid section -->
   <div role="main" id="main">
 
     <div id="refresh-button" class="button right">refresh</div>
 
-    <!-- main row -->
+    <!-- volume chart row -->
     <div class="row">
-
-      <!-- left column -->
-      <div class="large-8 columns">
-
+      <div class="large-12 columns">
         <!-- volume chart -->
         <div id="VolumeTimeChartContainer" ng-controller="VolumeTimeChartController">
-          <h3 class='medstream'>Tweets per Second</h3>
+          <h3 class='medstream'>Tweets per Interval</h3>
           <div id="VolumeTimeChart"></div>
         </div>
+      </div>
+    </div>
+    <!-- end volume chart row -->
 
+    <!-- percentage charts row -->
+    <div class="row">
+      <!-- left column -->
+      <div class="large-4 columns">
+        <!-- sentiment percent chart -->
+        <h3 class='medstream'>Sentiment</h3>
+        <div id="SentimentChartContainer" ng-controller="SentimentChartController">
+          <div id="SentimentChart"></div>
+        </div>
+      </div>
+
+      <!-- middle column -->
+      <div class="large-4 columns">
+        <!-- source percentages -->
+        <h3 class='medstream'>Source</h3>
+        <div id="SourceChartContainer" ng-controller="SourceChartController">  
+          <div id="SourceChart"></div>
+        </div>
+      </div>
+
+      <!-- right column -->
+      <div class="large-4 columns">
         <!-- total tweets -->
-        <h3 class='medstream'>Totals by Keyword</h3>
+        <h3 class='medstream'>Keyword</h3>
         <div id="KeywordChartContainer" ng-controller="KeywordChartController">  
           <div id="KeywordChart"></div>
         </div>
+      </div>
+    </div>
+    <!-- end percentage charts row -->
 
+    <!-- OG 
+     totals row 
+    <div class="row">
+      <div class="large-12 columns">
         <div id="TotalTweetsContainer" ng-controller="TotalsController">
           <h3 class='medstream'>Social Media Totals</h3>
           <table id="post_totals">
@@ -88,21 +117,93 @@
             </tr>
           </table>
         </div>
-
       </div>
-      <!-- end of left column -->
-    
-
-      <!-- right column -->
-      <!-- all media  -->
-      <div id="FeedContainer" class="large-4 columns" ng-controller="AllMediaController">
-        <h3 class='medstream'>Recent Posts</h3>
-        <div class="panel" id='tweet_panel' ng-include="'/templates/AllMediaTemplate.html'"></div>
-      </div>
-    </div> 
-
     </div>
-    <!-- EOL main row -->
+    end totals row
+  -->
+
+
+    <!-- totals row -->
+    <div class="row" ng-controller="TotalsController">
+      <h3 class='medstream'>Social Media Totals</h3>
+      <div class="large-3 columns">
+        <div class='media_total' ng-controller="CollectionInfoController">
+          <span class='totals_text'>
+            <p class='title'>Collection Period</p>
+            <div><p class='today'>{{duration}} Days</div>
+            <div><p class='all'><em>{{begin_date | date: 'M/d/yy'}} - {{end_date | date: 'M/d/yy'}}</em></div>
+          </span>
+        </div>
+      </div>
+      <div class="large-3 columns">
+        <div class='media_total twitter'>
+          <!-- <span class='icon'></span> -->
+          <img src="images/icon_64_twitter_bird.png" width="64" height="64" class="icon_img"></img>
+          <span class='totals_text'>
+            <p class='title'>Twitter</p>
+            <p class='today'>{{todaysTweets}}</p> <em>Today</em>
+            <p class='all'>{{totalTweets}}</p> <em>All</em>
+          </span>
+        </div>
+      </div>
+      <div class="large-3 columns">
+        <div class='media_total facebook'>
+          <img src="images/icon_64_facebook.png" width="64" height="64" class="icon_img"></img>
+          <span class='totals_text'>
+            <p class='title'>Facebook</p>
+            <p class='today'>{{todaysFacebook}}</p> <em>Today</em>
+            <p class='all'>{{totalFacebook}}</p> <em>All</em>
+          </span>
+        </div>
+      </div>
+      <div class="large-3 columns">
+        <div class='media_total rss'>
+          <img src="images/icon_64_rss.png" width="64" height="64" class="icon_img"></img>
+          <span class='totals_text'>
+            <p class='title'>RSS</p>
+            <p class='today'>{{todaysRSS}}</p> <em>Today</em>
+            <p class='all'>{{totalRSS}}</p> <em>All</em>
+          </span>
+        </div>
+      </div>
+    </div>
+    <!-- end totals row -->
+
+
+    <!-- recent posts row -->
+    <div class="row">
+
+      <div id="FeedContainer" class="large-12 columns" ng-controller="AllMediaController">
+        <h3 class='medstream'>Recent Posts</h3>
+        <h4 class="medstream">Show or Hide:</h4>
+        <div id="controls">
+          <!-- <input type='checkbox' name='twitter' id='twitter_filter' class='feed_filter' checked="checked"></input><label for='twitter'>Twitter</label>
+          <input type='checkbox' name='facebook' id='facebook_filter' class='feed_filter' checked="checked"></input><label for='facebook'>Facebook</label>
+        -->
+          <div class="button-bar" id="filter_bar" ng-controller="FilterController">
+            <ul class="button-group">
+              <li><a class="small button feed_filter" name='twitter'>Twitter</a></li>
+              <li><a class="small button feed_filter" name="facebook">Facebook</a></li>
+              <li><a class="small button feed_filter" name='rss'>RSS</a></li>
+            </ul>
+            <ul class="button-group">
+              <li><a class="small button feed_filter" name='positive'>Positive</a></li>
+              <li><a class="small button feed_filter" name="neutral">Neutral</a></li>
+              <li><a class="small button feed_filter" name='negative'>Negative</a></li>
+            </ul>
+            <ul class="button-group">
+              <li><a class="small button feed_filter" name='doctor'>Doctor</a></li>
+              <li><a class="small button feed_filter" name="patients">Patient</a></li>
+              <li><a class="small button feed_filter" name='hospital'>Hospital</a></li>
+              <li><a class="small button feed_filter" name='victim'>Victim</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel" id='tweet_panel' ng-include="'/templates/AllMediaTemplate.html'"></div>
+      </div> 
+    </div>
+    <!-- end recent posts row -->
+
 
     <!-- search row -->
     <div class="row">
@@ -114,37 +215,17 @@
         <div class="large-12 columns panel" ng-include="'/templates/SearchTemplate.html'"></div>
       </div>
     </div> 
+    <!-- end search row -->
 
-
-    <!-- End Grid Section -->
-   
-
-
-    <!-- Footer -->
-    <!-- 
-    <footer class="row">
-      <div class="large-12 columns">
-        <hr />
-        <div class="row">
-          <div class="large-6 columns">
-          </div>
-          <div class="large-6 columns">
-            <ul class="inline-list right">
-              <li><a href="#">Section 1</a></li>
-              <li><a href="#">Section 2</a></li>
-              <li><a href="#">Section 3</a></li>
-              <li><a href="#">Section 4</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </footer>
-    -->
+    <!-- temp placeholders for testing -->
+    <span ng-controller="CollectionInfoController"></span>
+    <span ng-controller="ClientConfigController"></span>
 
   </div>
-    
+  <!-- End Grid Section -->
+   
 
-<!-- SCRIPTS -->
+  <!-- SCRIPTS -->
   <script src="/javascripts/foundation/vendor/custom.modernizr.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
@@ -163,6 +244,69 @@
     $(document).foundation();
   </script>
   
+
+    <script type="text/javascript">
+      //$(document).load( 
+        //console.log('hello')
+          // hide recent posts based on which filter button is clicked
+          // name values for filter buttons match class values in the feed li
+          // clicking the button, hides the elements, un-clicking it, shows them again
+          // an element is hidden if it contains at least one class name to be filtered
+          $(".feed_filter").click(
+            function($this) {
+              var index = -1;
+              // get reference to the scope variable containing our filter words
+              var scope = angular.element($("#filter_bar")).scope();
+              // get the name of button clicked, this is our filter word
+              var filter = this.name;
+
+              // add the filter word to the array if it's not there,
+              // if it is there, remove it
+              scope.$apply(function() {
+                  index = scope.filters_source.indexOf(filter);
+
+                  if (index >= 0) {
+                    scope.filters_source.splice(index, 1);
+                  }
+                  else {
+                    scope.filters_source.push(filter);
+                  }
+              });
+              
+              // hide the the li elements that contain the class name which we want to hide / un-hide
+              $("#current_media .currentMedia").each( function() {
+                // get all of the class names applied to li and put into array
+                var class_list;
+                class_list = this.className.split(/\s+/);
+                
+                //console.log('class list: ' + class_list);
+                
+                // for each filter word in the array, check if it exists int
+                // the current li's class list
+                for (var ind in scope.filters_source) {
+                  // if we get a match hide and break
+                  if (class_list.indexOf(scope.filters_source[ind]) >= 0) {
+                    $(this).addClass('hide_me');
+                    break;
+                  }
+                  // if we are at the end of the list, then we should not hide
+                  // the li, make sure to remove the class that hides it
+                  else {
+                    if (ind == scope.filters_source.length - 1) {
+                      $(this).removeClass('hide_me');
+                    }
+                  }
+                }
+              });
+
+
+              //OG method
+              //$("#current_media ." + this.name).fadeToggle();
+              $(this).toggleClass("selected");
+            }
+          );
+      //);
+    </script>
 <!-- END SCRIPTS -->
 
 <!-- END BODY -->  

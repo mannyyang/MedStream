@@ -75,7 +75,7 @@ hr {
 */
 
 /*------  Keyword Chart Styles  -------*/
-#KeywordChart {
+#KeywordChart, #SentimentChart, #SourceChart {
 	height: 275px;
 }
 
@@ -103,22 +103,28 @@ hr {
 	font-weight: bold;
 }
 .positive {
-	background-color: #eef6e4 !important;
+	background-color: #d8f9dc !important;
 }
 .negative {
-	background-color: #f6ddd4 !important;
+	background-color: #f9e1d9 !important;
 }
 
 
 
 
 
-h3.medstream {
+h3.medstream, h4.medstream {
     color: #6C6C7D;
     font-weight: normal;
     margin: 1em 0 !important;
 }
 
+h4.medstream {
+    color: #6C6C7D;
+    font-weight: normal;
+	margin: 0.25em 0 0.5em 0 !important;
+    font-size: 12pt;
+}
 
 .total-tweets h1 {
 	color: #767686;
@@ -226,4 +232,139 @@ ul#rss_feed li {
     margin: 0 25px !important;
     width: 95% !important; 
     float: none !important;
+}
+
+.feed_filter.selected {
+	background-color: gray;
+}
+
+
+.media_total {
+	color: #fff;
+	font-size: 14pt;
+	background-color: #535665;
+}
+
+.media_total .totals_text {
+    display: block;
+    padding: 0.75em 0;
+    margin-left: 1em;
+}
+
+
+.media_total.twitter .totals_text,
+.media_total.facebook .totals_text,
+.media_total.rss .totals_text {
+    display: block;
+    padding: 0.75em 0;
+    margin-left: 4em;
+}
+
+
+.media_total p {
+	margin: 0;
+}
+
+.media_total p.title {
+	font-size: 16pt;
+}
+
+.media_total p.today {
+	font-weight: bold;
+	font-size: 26pt;
+}
+
+.media_total p.all {
+	font-size: 22pt;
+}
+
+
+.media_total p.all, .media_total p.today {
+	display: inline-block;
+}
+
+.media_total.twitter p.all, .media_total.twitter p.today,
+.media_total.facebook p.all, .media_total.facebook p.today,
+.media_total.rss p.all, .media_total.rss p.today {
+	width: 108px;
+	height: auto;
+}
+
+.media_total em {
+    color: #EEEEEE;
+    display: inline-block;
+    font-size: 14pt;
+    font-style: normal;
+    font-weight: normal;
+}
+
+/* create one-off for media totals */
+.media_total.twitter em,
+.media_total.facebook em,
+.media_total.rss em {
+    width: 50px;
+}
+
+
+
+.media_total .icon {
+	background-repeat: no-repeat;
+	display: block;
+	width: 64px;
+	height: 128px;
+	float: left;
+}
+
+.media_total.twitter {
+	background-color: #3cf;
+}
+.media_total.twitter .icon {
+	background-image: url('../images/icon_64_twitter_bird.png');
+}
+
+.media_total.facebook {
+	background-color: #3b5998;
+}
+.media_total.facebook .icon {
+	background-image: url('../images/icon_64_facebook.png');
+}
+
+.media_total.rss {
+	background-color: #e4713e;
+}
+.media_total.rss .icon {
+	background-image: url('../images/icon_64_rss.png');
+}
+
+
+/* current media */
+.currentMedia p.username {
+    color: #888888;
+    margin: -1em 0 1em;
+}
+
+
+/* search table */
+tr.search-results {
+    border-bottom: 1px solid #CCCCCC;.
+}
+
+tr.search-results td {
+    color: #666666 !important;
+    line-height: 15pt;
+    vertical-align: top;
+}
+
+.hide_me {
+	display: none;
+}
+
+
+
+/* img icon */
+img.icon_img {
+	position:  relative;
+	top: 0;
+	left: 0;
+	float: left;
 }

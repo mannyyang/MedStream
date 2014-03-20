@@ -1,5 +1,7 @@
 //instantiate app for angular use
 var MedStreamApp = angular.module('MedStream', [])
+
+
 .factory('SocketFactory', function(){
 
   //instantiate client-side socket connection
@@ -19,13 +21,15 @@ var MedStreamApp = angular.module('MedStream', [])
   var chart = new Highcharts.Chart({
               chart: {
                   renderTo: 'KeywordChart',
-                  type: 'bar'
+                  type: 'column'
               },
               title: {text: null},
               legend: {enabled: false},
               credits: {enabled: false},
+              colors: ['#575adc','#e35f24', '#2ba8e2', '#2ba8e2'],
               xAxis: {
-                labels: {enabled: false}
+                labels: {enabled: true},
+                categories: ['doctor', 'hospital', 'patients', 'victim']
               },
               yAxis: {
                   min: 0,
@@ -34,30 +38,88 @@ var MedStreamApp = angular.module('MedStream', [])
               tooltip: {
               },
               plotOptions: {
-
+                  series: {colorByPoint: true}
               },
-              colors: ['#575adc','#e35f24', '#2ba8e2', '#2ba8e2'],
+              
               series: [{
-                    name: 'doctor',
-                    id: 'doctor',
-                    data: [10]
-        
-                }, {
-                    name: 'hospital',
-                    id: 'hospital',
-                    data: [15]
-        
-                }, {
-                    name: 'patients',
-                    id: 'patients',
-                    data: [25]
-        
-                }, {
-                    name: 'victim',
-                    id: 'victim',
-                    data: [5]
-        
-                }
+                    data: [0, 0, 0, 0]
+                  }
+              ]
+          });
+
+  return chart;
+})
+
+.factory('SentimentChartFactory', function(){
+  /*
+    ToDo
+    - need to bootstrap this in a way that doesn't require hard coding the series values
+  */
+  var chart = new Highcharts.Chart({
+              chart: {
+                  renderTo: 'SentimentChart',
+                  type: 'column'
+              },
+              title: {text: null},
+              legend: {enabled: false},
+              credits: {enabled: false},
+              colors: ['#12bb2a','#c5c5c5', '#e62d15'],
+              xAxis: {
+                labels: {enabled: true},
+                categories: ['positive', 'neutral', 'negative']
+              },
+              yAxis: {
+                  min: 0,
+                  title: {text: null}
+              },
+              tooltip: {
+              },
+              plotOptions: {
+                  series: {colorByPoint: true}
+              },
+              
+              series: [{
+                    data: [0, 0, 0]
+                  }
+              ]
+          });
+
+  return chart;
+})
+
+
+
+.factory('SourceChartFactory', function(){
+  /*
+    ToDo
+    - need to bootstrap this in a way that doesn't require hard coding the series values
+  */
+  var chart = new Highcharts.Chart({
+              chart: {
+                  renderTo: 'SourceChart',
+                  type: 'column'
+              },
+              title: {text: null},
+              legend: {enabled: false},
+              credits: {enabled: false},
+              colors: ['#3cf','#3b5998', '#e4713e'],
+              xAxis: {
+                labels: {enabled: true},
+                categories: ['twitter', 'facebook', 'rss']
+              },
+              yAxis: {
+                  min: 0,
+                  title: {text: null}
+              },
+              tooltip: {
+              },
+              plotOptions: {
+                  series: {colorByPoint: true}
+              },
+              
+              series: [{
+                    data: [0, 0, 0]
+                  }
               ]
           });
 
@@ -72,11 +134,18 @@ var MedStreamApp = angular.module('MedStream', [])
     },
     chart: {
         renderTo: 'VolumeTimeChart',
-        type: 'line'
+        type: 'area'
     },
     title: {text: null},
     legend: {enabled: false},
     credits: {enabled: false},
+    plotOptions: {
+      area: {
+        fillColor: "#c0deed"
+      },
+      lineWidth: 1
+    },
+    colors : ['#3cf'],
     xAxis: {
       type: 'category'
     },
@@ -95,8 +164,8 @@ var MedStreamApp = angular.module('MedStream', [])
     },
     series: [
       {
-        name: 'TweetsPerSec',
-        data: [0,0,0,0,0,0,0,0,0,0]
+        name: 'Tweets per Interval',
+        data: [0,0,0,0,0,0,0,0,0,0,0,0,0]
       }]
 });
 
@@ -125,52 +194,32 @@ MedStreamApp.controller('AllMediaController', function AllMediaController($scope
   SocketFactory.on('media-route', function(data){
     //console.log('data: ' + JSON.stringify(data));
 
-    //$scope.allMediaFeed = data.recentMedia;
-
     for (var item in data.recentMedia) {
       $scope.allMediaFeed.push(data.recentMedia[item]);
 
       if ($scope.allMediaFeed.length > max_recent_post_count) {
         $scope.allMediaFeed.shift();
-        console.log('removing something...');
+        //console.log('removing something...');
       }
     }
 
 
     $scope.$apply();
+
+
+    $scope.concatKeywords = function(arr) {
+      //ToDo: build entire class string here
+      var str = "";
+      for (var thing in arr) {
+        str += arr[thing].toLowerCase() + " "
+        //$scope.filters_source.push(arr[thing], 1)
+      }
+      return str;
+    }
   });
 });
 
-//---- RSSFEED CONTROLLER -----//
-MedStreamApp.controller('RSSPostingController', function RSSPostingController($scope, SocketFactory) {
-  //instantiate variables
-  $scope.rssPostingFeed = [];
 
-  $('#refresh-button').click(function(){
-    SocketFactory.emit('refresh-route');
-  });
-
-  // When socket receives tweet, add to the recent tweet array
-  SocketFactory.on('rssPosting-route', function(data){
-    $scope.rssPostingFeed = data.recentRSS;
-    $scope.$apply();
-  });
-});
-
-// //---- TOTAL RSS CONTROLLER -----//
-// MedStreamApp.controller('TotalRSSController', function TotalRSSController($scope, SocketFactory) {
-//   //instantiate variables
-//   $scope.totalRSS = 0;
-//   $scope.todaysRSS = 0;
-
-//   // When socket receives tweet, add to the recent tweet array
-//   SocketFactory.on('total-rss-route', function(data){
-//     $scope.totalRSS = data.totalRSS;
-//     $scope.todaysRSS = data.todaysRSS;
-//     $scope.$apply();
-//   });
-
-// });
 
 //---- TOTALS CONTROLLER -----//
 MedStreamApp.controller('TotalsController', function TotalsController($scope, SocketFactory) {
@@ -198,67 +247,101 @@ MedStreamApp.controller('TotalsController', function TotalsController($scope, So
 
 });
 
-//---- FEED CONTROLLER -----//
-MedStreamApp.controller('FeedController', function FeedController($scope, SocketFactory) {
-  //instantiate variables
-  $scope.twitterfeed = [];
+//---- Collection Info Controller -----//
+// NOT FINISHED
+MedStreamApp.controller('CollectionInfoController', function CollectionInfoController($scope, SocketFactory) {
 /*
   $('#refresh-button').click(function(){
     SocketFactory.emit('refresh-route');
   });
+*/
+
+  $scope.duration = 0;
+  $scope.begin_date = '';
+  $scope.end_date = '';
 
   // When socket receives tweet, add to the recent tweet array
-  SocketFactory.on('tweet-route', function(data){
-    $scope.twitterfeed = data.recentTweets;
-    $scope.$apply();
+  SocketFactory.on('collection-info-route', function(data){
+      console.log('collection info: ' + JSON.stringify(data));
+      $scope.duration = data.days;
+      $scope.begin_date = data.earliest_date;
+      $scope.end_date = data.latest_date;
+  });
+});
+
+
+//---- Client Config Controller -----//
+// retrieve client config data from server
+// NOT FINISHED
+MedStreamApp.controller('ClientConfigController', function ClientConfigController($scope, SocketFactory) {
+/*
+  $('#refresh-button').click(function(){
+    SocketFactory.emit('refresh-route');
   });
 */
-});
 
-//---- Facebook FEED CONTROLLER -----//
-MedStreamApp.controller('FacebookFeedController', function FacebookFeedController($scope, SocketFactory) {
-  //instantiate variables
-  $scope.facebookfeed = [];
+  console.log('inside ClientConfigController');
 
-  $('#refresh-button').click(function(){
-    SocketFactory.emit('refreshfb-route');
-  });
-
-  // When socket receives fb post, add to the recent post array
-  SocketFactory.on('facebook-route', function(data){
-    // $scope.facebookfeed = data.recentfbposts;
-    $scope.facebookfeed = data.recentfbposts;
-    $scope.$apply();
+  // When socket receives tweet, add to the recent tweet array
+  SocketFactory.on('client-config-route', function(data){
+      //console.log('client config: ' + JSON.stringify(data));
   });
 });
 
-//---- TOTAL TWEETS CONTROLLER -----//
-// MedStreamApp.controller('TotalTweetsController', function TotalTweetsController($scope, SocketFactory) {
-//   //instantiate variables
-//   $scope.totalTweets = 0;
-//   $scope.todaysTweets = 0;
 
-//   // When socket receives tweet, add to the recent tweet array
-//   SocketFactory.on('total-tweets-route', function(data){
-//     $scope.totalTweets = data.totalTweets;
-//     $scope.todaysTweets = data.todaysTweets;
-//     $scope.$apply();
-//   });
 
-// });
+//---- Sentiment CHART CONTROLLER -----//
+MedStreamApp.controller('SentimentChartController', function SentimentChartController($scope, SocketFactory, SentimentChartFactory) {
+  // When socket receives tweet, add the data to array and then to chart, redraw
+  SocketFactory.on('sentiments-route', function(data){
+
+    var newData = [Math.round(data.positive), Math.round(data.neutral), Math.round(data.negative)];
+    SentimentChartFactory.series[0].setData(newData);
+    SentimentChartFactory.redraw();
+  });
+});
+
+
+//---- Source CHART CONTROLLER -----//
+MedStreamApp.controller('SourceChartController', function SentimentChartController($scope, SocketFactory, SourceChartFactory) {
+  // When socket receives tweet, add the data to array and then to chart, redraw
+  SocketFactory.on('source-percent-route', function(data){
+
+    var newData = [Math.round(data.twitter_percent), Math.round(data.facebook_percent), Math.round(data.rss_percent)];
+
+    //console.log('newData[]' + JSON.stringify(newData))
+
+    SourceChartFactory.series[0].setData(newData);
+    SourceChartFactory.redraw();
+  });
+});
+
 
 //---- KEYWORD CHART CONTROLLER -----//
 MedStreamApp.controller('KeywordChartController', function KeywordChartController($scope, SocketFactory, KeywordChartFactory) {
   // When socket receives tweet, add to the recent tweet array
   SocketFactory.on('keywords-route', function(data){
 
+    //console.log('keyword data: ' + JSON.stringify(data.keywordList));
+
+    // set the categories according to what the server sends us
+    KeywordChartFactory.xAxis[0].setCategories(data.keywordList.sort());
+
+    var newData = [];
     for (var i = 0; i < data.keywordList.length; i++){
-      var newData = [];
 
-      newData.push(data.keywordPercentages[data.keywordList[i]]);
 
-      KeywordChartFactory.get(data.keywordList[i]).setData(newData); 
+      //><><>< debug
+      //console.log('key: ' + data.keywordList[i] + ', val: ' + data.keywordPercentages[data.keywordList[i]]);
+
+      newData.push(Math.round(data.keywordPercentages[data.keywordList[i]]));
+
+      //KeywordChartFactory.get(data.keywordList[i]).setData(newData);
     }
+
+    //console.log('newData[]' + JSON.stringify(newData))
+
+    KeywordChartFactory.series[0].setData(newData);
 
     KeywordChartFactory.redraw();
   });
@@ -298,4 +381,9 @@ MedStreamApp.controller('SearchController', function SearchController($scope, So
     $scope.searchresults = data.searchresults;
     $scope.$apply();
   });
+});
+
+// store the filter values selected by user
+MedStreamApp.controller('FilterController', function Filtercontroller($scope) {
+  $scope.filters_source = [];
 });

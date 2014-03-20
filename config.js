@@ -28,3 +28,12 @@ exports.twitterCredentials = {
 //--- RSS Feed ---//
 exports.cacheTime = 60 * 60 * 1000; // 1 hour in milliseconds
 exports.maxItems = 50; 
+
+// appearance config
+exports.client_config = {
+							keywords: {
+										values: [ 'doctor', 'patients', 'hospital' , 'victim'],
+										color: {'doctor': '#575adc', 'patients' : '#2BA8E2', 'hospital' : '#E35F24', 'victim' : '#2BA8E2', 'default' : '#800'}
+									  }
+
+						}

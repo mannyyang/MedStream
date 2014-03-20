@@ -1,6 +1,5 @@
-
 <ul id='current_media' class='medstream'>
-	<li class="currentMedia" ng-repeat="currentMedia in allMediaFeed | reverse" ng-class="{'positive': currentMedia.polarity == 4, 'negative': currentMedia.polarity == 0}">
+	<li class="currentMedia {{currentMedia.source | lowercase}} {{concatKeywords(currentMedia.keywords)}} {{currentMedia.polarity}}" ng-repeat="currentMedia in allMediaFeed | reverse" ng-class="{'positive': currentMedia.polarity == 4, 'negative': currentMedia.polarity == 0, 'neutral': currentMedia.polarity == 2}">
 		<h1>{{currentMedia.source}}</h1>
 		<p>{{currentMedia.created_at | date: 'M/d/yyyy  h:mma'}}</p>
 		<div ng-if="currentMedia.link.length <= 0">
@@ -10,6 +9,7 @@
 			<p>{{currentMedia.text}}</p>
 			<p>{{currentMedia.description}}</p>
 		</div>
+		<p class='username'>{{currentMedia.user[0].screen_name}}</p>
 		<div ng-if="currentMedia.text.length >= 200">
 			<p ng-hide="display">{{currentMedia.title}}...</p>
 			<p ng-show="display">{{currentMedia.text}}</p>

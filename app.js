@@ -136,33 +136,49 @@ function startTwitterAnalytics(twit){
     intervalCount = 0;
     
     GetTweetsPerInterval(req, intervalCount);
-    //GetTotalTweets(req);
     GetTotals(req);
+
+    /*
+    // subsubmed into GetRecentMedia()
     GetRecentTweets(req);
     GetRecentRSS(req);
     GetRecentfbposts(req);
+    */
+    
     GetRecentMedia(req);
     GetKeywordPercentages(req);
     GetSentimentAnalytics(req);
+
+    GetSourcePercentage(req);
+    GetCollectionDuration(req);
     //GetFacebook();
     //GetTotalRSS(req);
+
+    SendClientConfig(req);
 
     setInterval(function(){
       GetTweetsPerInterval(req, intervalCount);
       intervalCount = 0;
-      //GetTotalTweets(req);
       GetTotals(req);
       GetKeywordPercentages(req);
       GetSentimentAnalytics(req);
+      GetSourcePercentage(req);
+
+      GetCollectionDuration(req);
       //GetTotalRSS(req);
+
+      SendClientConfig(req);
     }, 2500);
   });
 
   //---REFRESH ROUTE---//
   app.io.route('refresh-route', function(req) {
+    /*
+    // subsubmed into GetRecentMedia()
     GetRecentTweets(req);
     GetRecentRSS(req);
     GetRecentfbposts(req);
+    */
     GetRecentMedia(req);
   });
   //---SEARCH ROUTE---//
@@ -260,6 +276,16 @@ function startFacebookAnalytics(){
 
 }
 
+function SendClientConfig(req){
+  //console.log('sending config: ' + JSON.stringify(config.client_config));
+
+  req.io.emit('client-config-route', {
+    config : config.client_config
+  });
+
+
+}
+
 //////////////////////////////////
 //-------HELPER FUNCTIONS-------//
 //////////////////////////////////
@@ -302,6 +328,8 @@ function AnalyzeSentiment(tweets){
     });
   }
 }
+
+
 // Grab recent tweets and send them to the feed
 function GetRecentTweets(req){
   var query = Document.find({source:"twitter"}).sort({created_at: -1}).limit(35);
@@ -922,6 +950,93 @@ function GetSentimentAnalytics(req){
     negative: negative
   });
 
+}
+
+
+// Get analytics from sentiment data
+var twitter_percent = 0.0;
+var facebook_percent = 0.0;
+var rss_percent = 0.0;
+var total_posts = 0;
+function GetSourcePercentage(req){
+
+  // aren't we getting this total elsewhere?
+  Document.count({}, function(err, count) {
+    if (err) return console.error(err);
+    total_posts = count;
+  });
+
+
+  Document.count({source: 'twitter' }, function(err, count) {
+    if (err) return console.error(err);
+    twitter_percent = (count/total_posts)*100;
+  });
+
+  Document.count({source: 'facebook' }, function(err, count) {
+    if (err) return console.error(err);
+    facebook_percent = (count/total_posts)*100;
+  });
+
+  Document.count({source: 'RSS' }, function(err, count) {
+    if (err) return console.error(err);
+    rss_percent = (count/total_posts)*100;
+  });
+
+/*
+  console.log('twitter percent:' + twitter_percent)
+  console.log('facebook percent:' + facebook_percent)
+  console.log('rss percent:' + rss_percent)
+*/
+
+  //Send message to client
+  req.io.emit('source-percent-route', {
+    twitter_percent: twitter_percent,
+    facebook_percent: facebook_percent,
+    rss_percent: rss_percent
+  });
+}
+
+
+
+// Get analytics from sentiment data
+  var earliest_date = "";
+  var latest_date = "";
+  var days = 0;
+function GetCollectionDuration(req) {
+
+
+  /*
+    var query = Document.find({source: "RSS"}).sort({created_at: -1}).limit(35);
+    query.exec(function(err, recentRSS) {
+      */
+
+  var query = Document.find({created_at: {$gt: '1900-01-01T00:00:24Z'}}).sort({created_at: 1}).limit(1);
+  query.exec(function(err, earliest_record) {
+    if (err) return console.error(err);
+    earliest_date = new Date(earliest_record[0].created_at);
+    //console.log('earliest date: ' + earliest_record[0].created_at);
+  });
+
+
+  var query = Document.find({created_at: {$gt: '1900-01-01T00:00:24Z'}}).sort({created_at: -1}).limit(1);
+  query.exec(function(err, latest_record) {
+    if (err) return console.error(err);
+    latest_date = new Date(latest_record[0].created_at);
+    //console.log('latest date: ' + latest_record[0].created_at);
+  });
+
+  //get difference of dates by ms and convert to days
+  if ((earliest_date instanceof Date) && (latest_date instanceof Date)) {
+    //days = +((latest_date.getTime() - earliest_date.getTime()) / 1000 / 60 / 60 / 24).toFixed(2);
+    days = Math.round((latest_date.getTime() - earliest_date.getTime()) / 1000 / 60 / 60 / 24);
+  }
+
+  //Send message to client
+  req.io.emit('collection-info-route', {
+    earliest_date: earliest_date,
+    latest_date: latest_date,
+    days: days
+  });
 }
 
 //For todays date;
