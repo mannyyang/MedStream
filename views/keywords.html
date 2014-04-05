@@ -6,69 +6,27 @@
   <meta name="viewport" content="width=device-width" />
   <title>Welcome to MediaStream</title>
 
-<!--
-  <link rel="stylesheet" href="/stylesheets/foundation/normalize.css" />
-  <link rel="stylesheet" href="/stylesheets/foundation/foundation.css" />
-  <link rel="stylesheet" href="/stylesheets/font-awesome.css" />
-
-  <link rel="stylesheet" href="/stylesheets/style2.css" />
-  -->
-  <link rel="stylesheet" href="/stylesheets/keyword-search2.css"/>
-  <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
-  <link href="/stylesheets/jquery.tagit.css" rel="stylesheet" type="text/css">
-
 </head>
 
-<body ng-app="MedStream">
-  <div class = 'splash-title'>
-    <img src='/images/mediastream_logo_500.png'></img>
+<body ng-app="KeywordsSubmitApp">
+
+  <div id="search" class="large-12 columns" ng-controller="KeywordsSubmitController">
+    <div class="panel-header" style="height: 73px;">
+      <h2 class="left">Keywords</h2>
+      <div class="small-9 columns">
+        <input type="text" id="right-label">
+      </div>
+      <button id="keywordSubmit-button" class="button right">search</button>
+    </div>
   </div>
 
 
-<form class="form-wrapper cf">
-    <!--<input id="keywordTags" type="text" placeholder="Search here..." required> -->
-    <ul id="keywordTags"></ul>
-    <div id="events_container"></div>
-    <button id="insertKeywords" type="submit">Search</button>
-</form>   
-
-
-
-
-
-
-
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="/javascripts/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("#keywordTags").tagit({
-          availableTags: ["Facebook", "hackathon", "socal", "southern", "california", "regional", "hacking", "#HackersUnite", "#HackerNation"],
-          allowSpaces: true,
-          tagLimit: 5,
-          removeConfirmation: true
-        });
-
-        $("#insertKeywords").click(function(){
-          $("#keywordTags").tagit("assignedTags");
-        });
-
-        var eventTags = $('#keywordTags');
-        var addEvent = function(text) {
-                $('#events_container').append(text + '<br>');
-            };
-
-        eventTags.tagit({
-            onTagLimitExceeded: function(evt, ui) {
-                addEvent('Sorry, keyword limit of 5 reached.');
-            }
-        });
-        
-        
-    });
-</script>
+  <script src="/javascripts/foundation/vendor/custom.modernizr.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/javascripts/angular/angular.js"></script>
+  <script src="/javascripts/KeywordsSubmitApp.js"></script>
 
 </body>
+
 </html>

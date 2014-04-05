@@ -13,5 +13,5 @@ exports.index2 = function(req, res){
 };
 
 exports.keywords = function(req, res){
-	res.sendfile(dir + '/views/keywords.html');
+  res.sendfile(dir + '/views/keywords.html');
 };

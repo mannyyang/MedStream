@@ -47,14 +47,31 @@ mongoose.connection.on('error', function (err){
   console.log(err);
 });
 
+// FACEBOOK HACKATHON CODE //
+app.io.route('client-submit-route', function(req){
+
+  config.keywords = req.data.keywords;
+  console.log(config.keywords);
+
+  // Set Twitter API key, token, & secret
+  var T = new twitter(config.twitterCredentials);
+  startTwitterAnalytics(T);
+  startRSSFeedParser();
+  startFacebookAnalytics();
+
+  // req.io.emit('client-submit-route');
+
+});
+
+
 ///////////////////////////////
 //-------INTIALIZE APP-------//
 ///////////////////////////////
 // Set Twitter API key, token, & secret
-var T = new twitter(config.twitterCredentials);
-startTwitterAnalytics(T);
-startRSSFeedParser();
-startFacebookAnalytics();
+// var T = new twitter(config.twitterCredentials);
+// startTwitterAnalytics(T);
+// startRSSFeedParser();
+// startFacebookAnalytics();
 
 //////////////////////////
 //-------RSS FEED-------//
@@ -127,7 +144,7 @@ function startTwitterAnalytics(twit){
     tweets = [];
   }, 5000);
 
-///////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////
   // Fill the client's dashboard with info when called //
   ///////////////////////////////////////////////////////
   // Set Loop intervals only when a client calls for it
@@ -198,7 +215,7 @@ function startFacebookAnalytics(){
   for (var i = 0; i < config.keywords.length; i++){
     facebookKeywords += config.keywords[i]+" ";
   }
-    // console.log("facebookKeyword : "+facebookKeyword);
+    console.log("facebookKeywords : "+facebookKeywords);
     var facebookUrl = config.facebookURL.facebook+'&access_token='+config.facebookCredentials.access_token+'&q='+facebookKeywords;
     var facebookItems = [];
     var intervalCount = 0;
@@ -214,7 +231,7 @@ function startFacebookAnalytics(){
       // Got all response, now parsing...
 
       if (!body || res.statusCode !== 200){
-        return console.error(err);
+        return console.error('facebook error: ' + res.statusCode);
       }
         //return callback({message: "Invalid Feed"});
 
