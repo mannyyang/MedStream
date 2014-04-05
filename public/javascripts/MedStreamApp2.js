@@ -105,7 +105,7 @@ var MedStreamApp = angular.module('MedStream', [])
               colors: ['#3cf','#3b5998', '#e4713e'],
               xAxis: {
                 labels: {enabled: true},
-                categories: ['twitter', 'facebook', 'rss']
+                categories: ['twitter', 'facebook', 'rss', 'reddit']
               },
               yAxis: {
                   min: 0,
@@ -118,7 +118,7 @@ var MedStreamApp = angular.module('MedStream', [])
               },
               
               series: [{
-                    data: [0, 0, 0]
+                    data: [0, 0, 0, 0]
                   }
               ]
           });
@@ -230,6 +230,8 @@ MedStreamApp.controller('TotalsController', function TotalsController($scope, So
   $scope.todaysRSS = 0;
   $scope.totalFacebook = 0;
   $scope.todaysFacebook = 0;
+  $scope.totalReddit = 0;
+  $scope.todaysReddit = 0;
 
   // When socket receives tweet, add to the recent tweet array
   SocketFactory.on('totals-route', function(data){
@@ -241,6 +243,9 @@ MedStreamApp.controller('TotalsController', function TotalsController($scope, So
 
     $scope.totalFacebook = data.totalFacebook;
     $scope.todaysFacebook = data.todaysFacebook;
+
+    $scope.totalReddit = data.totalReddit;
+    $scope.todaysReddit = data.todaysReddit;
 
     $scope.$apply();
   });
@@ -307,7 +312,7 @@ MedStreamApp.controller('SourceChartController', function SentimentChartControll
   // When socket receives tweet, add the data to array and then to chart, redraw
   SocketFactory.on('source-percent-route', function(data){
 
-    var newData = [Math.round(data.twitter_percent), Math.round(data.facebook_percent), Math.round(data.rss_percent)];
+    var newData = [Math.round(data.twitter_percent), Math.round(data.facebook_percent), Math.round(data.rss_percent), Math.round(data.reddit_percent)];
 
     //console.log('newData[]' + JSON.stringify(newData))
 

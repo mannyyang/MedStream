@@ -25,6 +25,8 @@ var twitter = require('twit');
 var needle = require('needle');
 //---XML Parser Dependency---//
 var parseXML = require('xml2js').parseString;
+//--Reddit - RedWrap Dependency--//
+var reddit = require('redwrap');
 
 // all environments
 app.set('views', __dirname + '/views');
@@ -58,8 +60,12 @@ app.io.route('client-submit-route', function(req){
   startTwitterAnalytics(T);
   startRSSFeedParser();
   startFacebookAnalytics();
+  startRedditAnalytics();
 
-  req.io.emit('client-submit-route');
+  setTimeout(function(){
+    req.io.emit('client-submit-route');
+  },4000);
+  
 
 });
 
@@ -205,6 +211,111 @@ function startTwitterAnalytics(twit){
 
 }
 
+// //-- Reddit Analytics -- //
+var redditItems = [];
+function startRedditAnalytics(){
+
+  for(var j = 0; j < config.keywords.length; j++){
+
+      reddit.r('all/search.json?q='+config.keywords[j]+'&sort=top', function(err, data, res){
+        //console.log(data); //outputs object representing first page of all subreddit
+        
+            var jsonData = data; 
+
+            var listing = jsonData.data.children;
+
+            listing.forEach(function(entry) {
+                //console.log(entry.data.title);
+
+                var text = entry.data.title;
+                var lowerTitleText = text.toLowerCase();
+                var keywords = [];
+
+                for (var i = 0; i < config.keywords.length; i++){
+                  if (lowerTitleText.search(config.keywords[i]) != -1){
+                      keywords.push(config.keywords[i]);
+                  }
+
+                  var redditPosting = new Document({
+                    id: entry.data.id,
+                    created_at: null,
+                    user: [{
+                      id: null,
+                      name: null,
+                      screen_name: entry.data.author,
+                      location: null
+                    }],
+                    title: entry.data.title,
+                    text: entry.data.title,
+                    link: entry.data.url,
+                    source: "reddit",
+                    keywords: keywords,
+                    polarity: null,
+                  });
+
+                  // Push the reddit item into an array that will be processed for sentiment analysis
+                  redditItems.push(redditPosting);
+
+                  //intervalCount++;
+                }
+            
+              });
+            });
+    }
+    analyzeRedditSentiment();
+}
+
+function analyzeRedditSentiment(){
+  var objRedditPosts = {data: redditItems};
+      if (redditItems.length > 0){
+        // Use HTTP Post to send a batch of tweets set as a JSON object
+        needle.post('http://www.sentiment140.com/api/bulkClassifyJson?appid=manuely@uci.edu', JSON.stringify(objRedditPosts),
+        function(err, resp, body){
+            if (!err) {
+              //when response is given, create a new mongoose document for each tweet
+              for (var i = 0; i < body.data.length; i++){
+                var redditDoc = new Document({
+                    id: body.data[i].id,
+                    created_at: null,
+                    user: [{
+                      id: null,
+                      name: null,
+                      screen_name: body.data[i].screen_name,
+                      location: null
+                    }],
+                    title: body.data[i].title,
+                    text: body.data[i].title,
+                    link: body.data[i].link,
+                    source: "reddit",
+                    keywords: body.data[i].keywords,
+                    polarity: body.data[i].polarity
+                });
+
+                //console.log("saved " + redditDoc);
+
+                // After tweet is saved, send to the client feed
+                redditDoc.save(function (err, feed) {
+                  if (err) return console.log(err);
+                });
+
+              }
+            }
+            else{
+              console.log(err);
+            }
+        });
+      }
+
+      //console.log("Reddit Media saved");
+
+      setInterval(function(){
+        analyzeRedditSentiment(redditItems);
+        redditItems = [];
+      }, 5000);
+}
+
+
+
 //////////////////////////////
 //-------FACEBOOK FEED-------//
 //////////////////////////////
@@ -323,7 +434,7 @@ function AnalyzeSentiment(tweets){
                   id: body.data[i].user[0].id,
                   name: body.data[i].user[0].name,
                   screen_name: body.data[i].user[0].screen_name,
-                  location: body.data[i].user[0] .location
+                  location: body.data[i].user[0].location
                 }],
                 title: null,
                 text: body.data[i].text,
@@ -374,6 +485,8 @@ var totalRSS = 0;
 var todaysRSS = 0;
 var totalFacebook = 0;
 var todaysFacebook = 0; 
+var totalReddit = 0;
+var todaysReddit = 0;
 function GetTotals(req){
 
   //TOTALS FOR TWITTER
@@ -402,7 +515,7 @@ function GetTotals(req){
     todaysRSS = count;
   });
 
-    //TOTALS FOR RSS
+    //TOTALS FOR FACEBOOK
   Document.count({source:"facebook"}, function(err, count) {
     if (err) return console.error(err);
     totalFacebook = count;
@@ -415,13 +528,28 @@ function GetTotals(req){
     todaysFacebook = count;
   });
 
+  //TOTALS FOR REDDIT
+  Document.count({source:"reddit"}, function(err, count) {
+    if (err) return console.error(err);
+    totalReddit = count;
+  });
+
+  var date = new Date();
+  date.setHours(0); date.setMinutes(0); date.setSeconds(0);
+  Document.count({created_at: {$gte: date, $lt: new Date()} , source:"reddit"}, function(err, count) {
+    if (err) return console.error(err);
+    todaysReddit = count;
+  });
+
   req.io.emit('totals-route', {
     totalTweets: totalTweets,
     todaysTweets: todaysTweets,
     totalRSS: totalRSS,
     todaysRSS: todaysRSS,
     totalFacebook: totalFacebook,
-    todaysFacebook: todaysFacebook
+    todaysFacebook: todaysFacebook,
+    totalReddit : totalReddit,
+    todaysReddit : todaysReddit
   });
 }
 // Get the percentages of each keyword that is shown in a tweet.
@@ -937,6 +1065,15 @@ function GetFacebook(){
         recentMedia: recentRSS
       });
     });
+
+     // get and send recent reddit posts
+    var query = Document.find({source: "reddit"}).sort({created_at: -1}).limit(35);
+    query.exec(function(err, recentReddit) {
+      if (err) console.log(err);
+      req.io.emit('media-route', {
+        recentMedia: recentReddit
+      });
+    });
 }
 
 // Get analytics from sentiment data
@@ -974,6 +1111,7 @@ function GetSentimentAnalytics(req){
 var twitter_percent = 0.0;
 var facebook_percent = 0.0;
 var rss_percent = 0.0;
+var reddit_percent = 0.0;
 var total_posts = 0;
 function GetSourcePercentage(req){
 
@@ -999,6 +1137,11 @@ function GetSourcePercentage(req){
     rss_percent = (count/total_posts)*100;
   });
 
+   Document.count({source: 'reddit' }, function(err, count) {
+    if (err) return console.error(err);
+    reddit_percent = (count/total_posts)*100;
+  });
+
 /*
   console.log('twitter percent:' + twitter_percent)
   console.log('facebook percent:' + facebook_percent)
@@ -1009,7 +1152,8 @@ function GetSourcePercentage(req){
   req.io.emit('source-percent-route', {
     twitter_percent: twitter_percent,
     facebook_percent: facebook_percent,
-    rss_percent: rss_percent
+    rss_percent: rss_percent,
+    reddit_percent: reddit_percent
   });
 }
 
@@ -1029,8 +1173,9 @@ function GetCollectionDuration(req) {
 
   var query = Document.find({created_at: {$gt: '1900-01-01T00:00:24Z'}}).sort({created_at: 1}).limit(1);
   query.exec(function(err, earliest_record) {
-    if (err) return console.error(err);
-    earliest_date = new Date(earliest_record[0].created_at);
+    if (err){return console.error(err);}
+    else{
+    earliest_date = new Date(earliest_record[0].created_at);}
     //console.log('earliest date: ' + earliest_record[0].created_at);
   });
 

@@ -126,7 +126,7 @@
     <!-- totals row -->
     <div class="row" ng-controller="TotalsController">
       <h3 class='medstream'>Social Media Totals</h3>
-      <div class="large-3 columns">
+      <div class="large-4 columns">
         <div class='media_total' ng-controller="CollectionInfoController">
           <span class='totals_text'>
             <p class='title'>Collection Period</p>
@@ -135,7 +135,7 @@
           </span>
         </div>
       </div>
-      <div class="large-3 columns">
+      <div class="large-2 columns">
         <div class='media_total twitter'>
           <!-- <span class='icon'></span> -->
           <img src="images/icon_64_twitter_bird.png" width="64" height="64" class="icon_img"></img>
@@ -146,7 +146,7 @@
           </span>
         </div>
       </div>
-      <div class="large-3 columns">
+      <div class="large-2 columns">
         <div class='media_total facebook'>
           <img src="images/icon_64_facebook.png" width="64" height="64" class="icon_img"></img>
           <span class='totals_text'>
@@ -156,13 +156,23 @@
           </span>
         </div>
       </div>
-      <div class="large-3 columns">
+      <div class="large-2 columns">
         <div class='media_total rss'>
           <img src="images/icon_64_rss.png" width="64" height="64" class="icon_img"></img>
           <span class='totals_text'>
             <p class='title'>RSS</p>
             <p class='today'>{{todaysRSS}}</p> <em>Today</em>
             <p class='all'>{{totalRSS}}</p> <em>All</em>
+          </span>
+        </div>
+      </div>
+      <div class="large-2 columns">
+        <div class='media_total reddit'>
+          <img src="images/icon_64_reddit.png" width="64" height="64" class="icon_img"></img>
+          <span class='totals_text'>
+            <p class='title'>Reddit</p>
+            <p class='today'>{{todaysReddit}}</p> <em>Today</em>
+            <p class='all'>{{totalReddit}}</p> <em>All</em>
           </span>
         </div>
       </div>
@@ -185,18 +195,32 @@
               <li><a class="small button feed_filter" name='twitter'>Twitter</a></li>
               <li><a class="small button feed_filter" name="facebook">Facebook</a></li>
               <li><a class="small button feed_filter" name='rss'>RSS</a></li>
+              <li><a class="small button feed_filter" name='reddit'>Reddit</a></li>
             </ul>
             <ul class="button-group">
               <li><a class="small button feed_filter" name='positive'>Positive</a></li>
               <li><a class="small button feed_filter" name="neutral">Neutral</a></li>
               <li><a class="small button feed_filter" name='negative'>Negative</a></li>
             </ul>
+
+            <!--
             <ul class="button-group">
               <li><a class="small button feed_filter" name='doctor'>Doctor</a></li>
               <li><a class="small button feed_filter" name="patients">Patient</a></li>
               <li><a class="small button feed_filter" name='hospital'>Hospital</a></li>
               <li><a class="small button feed_filter" name='victim'>Victim</a></li>
             </ul>
+            -->
+
+
+            <!--  TO-DO: Dynamically generate button group for keywords
+
+            <ul class="button-group">
+              <li ng-repeat="keyword in keywordList | filter:query | orderBy:orderProp">
+                <a class="small button feed_filter" name='{{keyword.word}}'>{{keyword.word}}</a>
+              </li>
+            </ul> -->
+
           </div>
         </div>
         <div class="panel" id='tweet_panel' ng-include="'/templates/AllMediaTemplate.html'"></div>

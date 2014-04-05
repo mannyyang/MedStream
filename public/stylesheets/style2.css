@@ -336,6 +336,14 @@ ul#rss_feed li {
 	background-image: url('../images/icon_64_rss.png');
 }
 
+.media_total.reddit {
+	background-color: #CCCCFF;
+	min-height: 200px
+}
+.media_total.reddit .icon {
+	background-image: url('../images/icon_64_reddit.png');
+}
+
 
 /* current media */
 .currentMedia p.username {
