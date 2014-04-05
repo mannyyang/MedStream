@@ -1074,6 +1074,7 @@ app.get('/', routes.index);
 // for UI development
 app.get('/index2.html', routes.index2);
 
+// keywords splash page
 app.get('/keywords.html', routes.keywords);
 
 //*** Start up the server ***//
