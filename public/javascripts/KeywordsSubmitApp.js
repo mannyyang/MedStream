@@ -18,6 +18,8 @@ KeywordsSubmitApp.controller('KeywordsSubmitController', function KeywordsSubmit
     SocketFactory.emit('client-submit-route', {
       keywords: $scope.submittedKeywords
     });
+
+    $('.form-wrapper img').show();
   });
 
   SocketFactory.on('client-submit-route', function(){

@@ -64,7 +64,7 @@ app.io.route('client-submit-route', function(req){
 
   setTimeout(function(){
     req.io.emit('client-submit-route');
-  },4000);
+  },5000);
   
 
 });
