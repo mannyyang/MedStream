@@ -4,31 +4,71 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width" />
-  <title>MedStream - Current Activity</title>
+  <title>Welcome to MediaStream</title>
 
+<!--
   <link rel="stylesheet" href="/stylesheets/foundation/normalize.css" />
   <link rel="stylesheet" href="/stylesheets/foundation/foundation.css" />
-  <link rel="stylesheet" href="/stylesheets/foundation/offcanvas.css" />
-  <link rel="stylesheet" href="/stylesheets/foundation/responsive-tables.css" />
   <link rel="stylesheet" href="/stylesheets/font-awesome.css" />
+
   <link rel="stylesheet" href="/stylesheets/style2.css" />
-  <link rel="stylesheet" href="/stylesheets/keyword-search.css"/>
+  -->
+  <link rel="stylesheet" href="/stylesheets/keyword-search2.css"/>
+  <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
+  <link href="/stylesheets/jquery.tagit.css" rel="stylesheet" type="text/css">
 
 </head>
 
 <body ng-app="MedStream">
-  <nav class='top-bar' id='header' data-topbar>
-    <ul class='title-area'>
-      <li class='name'>
-            <img src='/images/logo_sm.png'></img>
-      </li>
-    </ul>
-  </nav>
+  <div class = 'splash-title'>
+    <img src='/images/mediastream_logo_500.png'></img>
+  </div>
 
- <form class="form-wrapper">
-    <input type="text" id="search" placeholder="Enter up to 5 keywords here" required>
-    <input type="submit" value="go" id="submit">
-</form>
+
+<form class="form-wrapper cf">
+    <!--<input id="keywordTags" type="text" placeholder="Search here..." required> -->
+    <ul id="keywordTags"></ul>
+    <div id="events_container"></div>
+    <button id="insertKeywords" type="submit">Search</button>
+</form>   
+
+
+
+
+
+
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="/javascripts/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#keywordTags").tagit({
+          availableTags: ["Facebook", "hackathon", "socal", "southern", "california", "regional", "hacking", "#HackersUnite", "#HackerNation"],
+          allowSpaces: true,
+          tagLimit: 5,
+          removeConfirmation: true
+        });
+
+        $("#insertKeywords").click(function(){
+          $("#keywordTags").tagit("assignedTags");
+        });
+
+        var eventTags = $('#keywordTags');
+        var addEvent = function(text) {
+                $('#events_container').append(text + '<br>');
+            };
+
+        eventTags.tagit({
+            onTagLimitExceeded: function(evt, ui) {
+                addEvent('Sorry, keyword limit of 5 reached.');
+            }
+        });
+        
+        
+    });
+</script>
 
 </body>
 </html>
