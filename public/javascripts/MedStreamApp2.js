@@ -387,3 +387,24 @@ MedStreamApp.controller('SearchController', function SearchController($scope, So
 MedStreamApp.controller('FilterController', function Filtercontroller($scope) {
   $scope.filters_source = [];
 });
+
+
+// FACEBOOK HACKATHON CODE //
+//-- Keyword Submit CONTROLLER --//
+//client-submit-route - socket name
+MedStreamApp.controller('KeywordSubmitController', function KeywordSubmitController($scope, SocketFactory) {
+  //instantiate variables
+  $scope.submittedKeywords = [];
+  $scope.keywords = "";
+
+  $('#keywordSubmit-button').click(function(){
+    $scope.keywords = $('#search input').val();
+    $scope.submittedKeywords = $scope.keywords.split(",");
+
+    SocketFactory.emit('cilent-submit-route', $scope.submittedKeywords);
+  });
+
+  }
+}
+
+
