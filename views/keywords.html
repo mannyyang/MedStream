@@ -19,27 +19,22 @@
 
 </head>
 
-<body ng-app="MedStream">
+<body ng-app="KeywordsSubmitApp">
   <div class = 'splash-title'>
     <img src='/images/mediastream_logo_500.png'></img>
   </div>
 
 
-<form class="form-wrapper cf">
-    <!--<input id="keywordTags" type="text" placeholder="Search here..." required> -->
+<div class="form-wrapper cf" ng-controller="KeywordsSubmitController">
     <ul id="keywordTags"></ul>
     <div id="events_container"></div>
-    <button id="insertKeywords" type="submit">Search</button>
-</form>   
+    <button id="insertKeywords">Search</button>
+</div>   
 
-
-
-
-
-
-
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/javascripts/angular/angular.js"></script>
+<script src="/javascripts/KeywordsSubmitApp.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="/javascripts/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
@@ -49,10 +44,6 @@
           allowSpaces: true,
           tagLimit: 5,
           removeConfirmation: true
-        });
-
-        $("#insertKeywords").click(function(){
-          $("#keywordTags").tagit("assignedTags");
         });
 
         var eventTags = $('#keywordTags');

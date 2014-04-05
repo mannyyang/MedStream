@@ -12,13 +12,13 @@ KeywordsSubmitApp.controller('KeywordsSubmitController', function KeywordsSubmit
   $scope.submittedKeywords = [];
   $scope.keywords = "";
 
-  $('#keywordSubmit-button').click(function(){
-    $scope.keywords = $('#search input').val();
-    $scope.submittedKeywords = $scope.keywords.split(",");
-
+  $("#insertKeywords").click(function(){
+    $scope.submittedKeywords = $("#keywordTags").tagit("assignedTags");
+    
     SocketFactory.emit('client-submit-route', {
       keywords: $scope.submittedKeywords
     });
+
   });
 
 });
