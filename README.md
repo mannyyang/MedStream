@@ -3,9 +3,5 @@ MediaStream
 
 Social Dashboard with Sentiment Analysis
 
-Uses:
--Facebook
--Twitter
--RSS Feeds
--Reddit
+Sources: Facebook, Twitter, RSS Feeds, Reddit
 
