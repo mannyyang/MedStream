@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!--[if IE 8]>      <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Welcome to MediaStream</title>
+
+</head>
+
+<body ng-app="KeywordsSubmitApp">
+
+  <div id="search" class="large-12 columns" ng-controller="KeywordsSubmitController">
+    <div class="panel-header" style="height: 73px;">
+      <h2 class="left">Keywords</h2>
+      <div class="small-9 columns">
+        <input type="text" id="right-label">
+      </div>
+      <button id="keywordSubmit-button" class="button right">search</button>
+    </div>
+  </div>
+
+
+  <script src="/javascripts/foundation/vendor/custom.modernizr.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/javascripts/angular/angular.js"></script>
+  <script src="/javascripts/KeywordsSubmitApp.js"></script>
+
+</body>
+
+</html>

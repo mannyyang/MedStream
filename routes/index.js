@@ -11,3 +11,7 @@ exports.index = function(req, res){
 exports.index2 = function(req, res){
   res.sendfile(dir + '/views/index2.html');
 };
+
+exports.keywords = function(req, res){
+  res.sendfile(dir + '/views/keywords.html');
+};
