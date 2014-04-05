@@ -67,12 +67,12 @@ hr {
 #FeedContainer .panel{
 	max-height: 600px;
 	overflow: auto;
-	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	/*-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
 	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.75);
 	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.75);
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
-	border-radius: 10px;
+	border-radius: 10px;*/
 }
 
 /*** Tweets ***/
@@ -92,23 +92,23 @@ hr {
 /*------  Keyword Chart Styles  -------*/
 #KeywordChart, #SentimentChart, #SourceChart {
 	height: 275px;
-	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	/*-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
 	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.75);
 	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.75);
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
-	border-radius: 10px;
+	border-radius: 10px;*/
 }
 
 /*------  Volume Time Chart Styles  -------*/
 #VolumeTimeChart {
 	height: 325px;
-	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	/*-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
 	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.75);
 	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.75);
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
-	border-radius: 10px;
+	border-radius: 10px;*/
 }
 
 /*------  MISC  -------*/
@@ -270,12 +270,12 @@ ul#rss_feed li {
 	color: #fff;
 	font-size: 14pt;
 	background-color: #535665;
-	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	/*-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
 	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.75);
 	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.75);
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
-	border-radius: 10px;
+	border-radius: 10px;*/
 }
 
 .media_total .totals_text {
@@ -298,7 +298,7 @@ ul#rss_feed li {
 }
 
 .media_total p.title {
-	font-size: 16pt;
+	font-size: 14pt;
 }
 
 .media_total p.today {
