@@ -2,7 +2,7 @@
 var KeywordsSubmitApp = angular.module('KeywordsSubmitApp', [])
 .factory('SocketFactory', function(){
   //instantiate client-side socket connection
-  var socket = io.connect();
+  var socket = io.connect("wss://localhost");
   
   return socket;
 });
