@@ -59,7 +59,7 @@ app.io.route('client-submit-route', function(req){
   startRSSFeedParser();
   startFacebookAnalytics();
 
-  // req.io.emit('client-submit-route');
+  req.io.emit('client-submit-route');
 
 });
 

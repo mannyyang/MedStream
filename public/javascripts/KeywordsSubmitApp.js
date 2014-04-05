@@ -18,7 +18,10 @@ KeywordsSubmitApp.controller('KeywordsSubmitController', function KeywordsSubmit
     SocketFactory.emit('client-submit-route', {
       keywords: $scope.submittedKeywords
     });
+  });
 
+  SocketFactory.on('client-submit-route', function(){
+    window.location.href = "/index2.html";
   });
 
 });
