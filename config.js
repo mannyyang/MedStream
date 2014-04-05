@@ -31,8 +31,9 @@ exports.maxItems = 50;
 
 // appearance config
 exports.client_config = {
-	keywords: {
-				values: [ 'doctor', 'patients', 'hospital' , 'victim'],
-				color: {'doctor': '#575adc', 'patients' : '#2BA8E2', 'hospital' : '#E35F24', 'victim' : '#2BA8E2', 'default' : '#800'}
-			  }
-}
+							keywords: {
+										values: [ 'doctor', 'patients', 'hospital' , 'victim'],
+										color: {'doctor': '#575adc', 'patients' : '#2BA8E2', 'hospital' : '#E35F24', 'victim' : '#2BA8E2', 'default' : '#800'}
+									  }
+
+						}
