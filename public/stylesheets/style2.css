@@ -6,8 +6,20 @@
 h2 {
 	font-size: 25px;
 }
+h4 {
+	padding-left: 20px
+}
 hr {
 	margin: 0;
+}
+.title-area{
+	text-align: center;
+}
+.title-area .name{
+	padding-top: 40px;
+}
+.title-area h4{
+	padding-top: 40px;
 }
 .row {
 	max-width: 1600px;
@@ -58,6 +70,12 @@ hr {
 #FeedContainer .panel{
 	max-height: 600px;
 	overflow: auto;
+	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
 }
 
 /*** Tweets ***/
@@ -77,11 +95,23 @@ hr {
 /*------  Keyword Chart Styles  -------*/
 #KeywordChart, #SentimentChart, #SourceChart {
 	height: 275px;
+	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
 }
 
 /*------  Volume Time Chart Styles  -------*/
 #VolumeTimeChart {
 	height: 325px;
+	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
 }
 
 /*------  MISC  -------*/
@@ -243,6 +273,12 @@ ul#rss_feed li {
 	color: #fff;
 	font-size: 14pt;
 	background-color: #535665;
+	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
 }
 
 .media_total .totals_text {
@@ -259,7 +295,6 @@ ul#rss_feed li {
     padding: 0.75em 0;
     margin-left: 4em;
 }
-
 
 .media_total p {
 	margin: 0;

@@ -6,37 +6,37 @@
   <meta name="viewport" content="width=device-width" />
   <title>Welcome to MediaStream</title>
 
-<!--
-  <link rel="stylesheet" href="/stylesheets/foundation/normalize.css" />
-  <link rel="stylesheet" href="/stylesheets/foundation/foundation.css" />
-  <link rel="stylesheet" href="/stylesheets/font-awesome.css" />
-
-  <link rel="stylesheet" href="/stylesheets/style2.css" />
-  -->
   <link rel="stylesheet" href="/stylesheets/keyword-search2.css"/>
   <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
   <link href="/stylesheets/jquery.tagit.css" rel="stylesheet" type="text/css">
-
 </head>
 
 <body ng-app="KeywordsSubmitApp">
+
+  <!--MediaStream Title-->
   <div class = 'splash-title'>
     <img src='/images/mediastream_logo_500.png'></img>
   </div>
+  <!--end MediaStream Title-->
 
+  <!--Search Bar-->
+  <div class="form-wrapper cf" ng-controller="KeywordsSubmitController">
+      <ul id="keywordTags"></ul>
+      <div id="events_container"></div>
+      <button id="insertKeywords">Search</button>
+  </div>   
+  <!--end Search Bar-->
 
-<div class="form-wrapper cf" ng-controller="KeywordsSubmitController">
-    <ul id="keywordTags"></ul>
-    <div id="events_container"></div>
-    <button id="insertKeywords">Search</button>
-</div>   
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<!--scripts-->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/javascripts/angular/angular.js"></script>
 <script src="/javascripts/KeywordsSubmitApp.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="/javascripts/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<!--end scripts-->
+
+<!--jQuery elements-->
 <script type="text/javascript">
     $(document).ready(function() {
         $("#keywordTags").tagit({
@@ -56,10 +56,9 @@
                 addEvent('Sorry, keyword limit of 5 reached.');
             }
         });
-        
-        
     });
 </script>
+<!--end jQuery elements-->
 
 </body>
 </html>

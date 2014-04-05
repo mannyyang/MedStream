@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/stylesheets/style2.css" />
 
 </head>
-<body ng-app="MedStream">
+<body ng-app="MedStream" style="background: url(/images/kindajean.png);">
 <!-- START BODY -->
 
   <!-- START SIDE NAV -->
@@ -28,18 +28,15 @@
   -->
   <!-- END SIDE NAV -->
 
-<nav class='top-bar' id='header' data-topbar>
   <ul class='title-area'>
     <li class='name'>
-          <img src='/images/logo_sm.png'></img>
+          <img src='/images/mediastream_logo_500.png'></img>
     </li>
+    <h4>
+        powered by: <img src='/images/socmed1.png'></img>
+    </h4>
   </ul>
-  <ul class='left'>
-    <li class='name'>
-          <h1>Current Activity</h1>
-    </li>
-  </ul>
-</nav>
+
 
   
   <!-- grid section -->
@@ -48,7 +45,7 @@
     <div id="refresh-button" class="button right">refresh</div>
 
     <!-- volume chart row -->
-    <div class="row">
+    <div class="row" style="padding-bottom: 10px">
       <div class="large-12 columns">
         <!-- volume chart -->
         <div id="VolumeTimeChartContainer" ng-controller="VolumeTimeChartController">
@@ -60,7 +57,7 @@
     <!-- end volume chart row -->
 
     <!-- percentage charts row -->
-    <div class="row">
+    <div class="row" style="padding-bottom: 10px">
       <!-- left column -->
       <div class="large-4 columns">
         <!-- sentiment percent chart -->
@@ -71,7 +68,7 @@
       </div>
 
       <!-- middle column -->
-      <div class="large-4 columns">
+      <div class="large-4 columns" style="padding-bottom: 10px">
         <!-- source percentages -->
         <h3 class='medstream'>Source</h3>
         <div id="SourceChartContainer" ng-controller="SourceChartController">  
@@ -80,7 +77,7 @@
       </div>
 
       <!-- right column -->
-      <div class="large-4 columns">
+      <div class="large-4 columns" style="padding-bottom: 10px">
         <!-- total tweets -->
         <h3 class='medstream'>Keyword</h3>
         <div id="KeywordChartContainer" ng-controller="KeywordChartController">  
@@ -124,7 +121,7 @@
 
 
     <!-- totals row -->
-    <div class="row" ng-controller="TotalsController">
+    <div class="row" ng-controller="TotalsController" style="padding-bottom: 10px">
       <h3 class='medstream'>Social Media Totals</h3>
       <div class="large-3 columns">
         <div class='media_total' ng-controller="CollectionInfoController">
